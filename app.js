@@ -4,7 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const { errors, celebrate, Joi } = require('celebrate');
-const { login, createUser } = require('./controllers/users');
+const { login, createUser, conectTg } = require('./controllers/users');
 const NotFoundError = require('./errors/not-found-err');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const auth = require('./middlewares/auth');
@@ -12,8 +12,7 @@ const auth = require('./middlewares/auth');
 const { PORT = 3000 } = process.env;
 
 const CORS_WHITELIST = [
-    'http://localhost:3000',
-    'https://localhost:3000',
+    '*',
   ];
   const app = express();
   app.use(helmet());
@@ -47,19 +46,27 @@ const CORS_WHITELIST = [
     body: Joi.object().keys({
       email: Joi.string().required(),
       password: Joi.string().required(),
-      firstname: Joi.string().required(),
-      secondname: Joi.string().required(),
-      house: Joi.string().required(),
-    }),
+    })
   }), login);
+  app.post('/conect-tg', celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required(),
+      password: Joi.string().required(),
+      chat_id: Joi.string().required(),
+    })
+  }), conectTg);
   app.post('/signup', celebrate({
     body: Joi.object().keys({
       email: Joi.string().required(),
       password: Joi.string().required(),
-    }).unknown(true),
+      firstname: Joi.string().required(),
+      secondname: Joi.string().required(),
+      house: Joi.string().required(),
+      flat: Joi.number().min(1).required(),
+    }),
   }), createUser);
 
-
+  app.use('/survey', require('./routes/surveyResults'));
   app.use('/users', auth, require('./routes/users'));
   // app.use('/cards', auth, require('./routes/cards'));
   

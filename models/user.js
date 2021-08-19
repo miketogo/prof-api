@@ -22,10 +22,8 @@ const userSchema = new mongoose.Schema({
         maxlength: 30,
     },
     flat: {
-        type: String,
-        default: 'Не указано',
-        minlength: 1,
-        maxlength: 30,
+        type: Number,
+        required: true,
     },
     user_rights: {
         type: String,
@@ -47,6 +45,12 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
+        select: false,
+    },
+    telegram_id: {
+        type: String,
+        unique: true,
+        default: 'not connected',
         select: false,
     },
 });
