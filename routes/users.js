@@ -1,10 +1,11 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const {
-  getUsers, getUserById, updateUserProfile, updateUserAvatar,
+  getUsers, getUserById, updateUserProfile, getUserByChatId,
 } = require('../controllers/users');
 
 router.get('/', getUsers);
+router.get('/telegram', getUserByChatId);
 router.get('/:userId', celebrate({
   // валидируем параметры
   params: Joi.object().keys({
