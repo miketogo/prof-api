@@ -5,7 +5,6 @@ const {
 } = require('../controllers/users');
 
 router.get('/', getUsers);
-router.get('/telegram', getUserByChatId);
 router.get('/:userId', celebrate({
   // валидируем параметры
   params: Joi.object().keys({
