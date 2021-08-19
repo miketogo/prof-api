@@ -79,14 +79,15 @@ module.exports.getUserById = (req, res, next) => {
 };
 
 module.exports.getUserByChatId = (req, res, next) => {
-  User.findOne({telegram_id: req.chat_id}).orFail(() => new Error('NotFound'))
+  const { chat_id } = req.body;
+  User.findOne({telegram_id: chat_id}).orFail(() => new Error('NotFound'))
     .then((user) => res.status(200).send({ user }))
     .catch((err) => {
       if (err.message === 'NotFound') {
-        throw new NotFoundError('Нет пользователя с таким chat_id');
+        throw new NotFoundError('Нет пользователя с таким chat id');
       }
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        throw new InvalidDataError('Переданы некорректные данные при поиске пользователя по chat_id');
+        throw new InvalidDataError('Переданы некорректные данные при поиске пользователя по chat id');
       }
     })
     .catch(next);
