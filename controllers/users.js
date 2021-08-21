@@ -123,15 +123,22 @@ module.exports.updateUserProfile = (req, res, next) => {
 module.exports.conectTg = (req, res, next) => {
   const { email, password, chat_id } = req.body;
 
-  return User.findUserByCredentials(email, password)
+  return User.findUserByCredentials(email, password).select('+telegram_id')
     .then((user) => {
-      User.findByIdAndUpdate(user._id, { telegram_id: chat_id}, opts).orFail(() => new Error('NotFound'))
-      .then((user)=>{
-        const token = jwt.sign({ _id: user._id }, jwtSecretPhrase);
-        res.send({ user });
-      })
+      if (!user.telegram_id){
+          return User.findByIdAndUpdate(user._id, { telegram_id: chat_id}, opts).orFail(() => new Error('NotFound'))
+        .then((user)=>{
+          const token = jwt.sign({ _id: user._id }, jwtSecretPhrase);
+          res.send({ user });
+        })
+      } else {
+        return  new Error('ConflictError')  
+      }
     })
     .catch(() => {
+      if (err.name === 'ConflictError') {
+        throw new InvalidDataError('Пользователь уже авторизован');
+      }
       throw new AuthError('Передан неверный логин или пароль');
     })
     .catch(next);
