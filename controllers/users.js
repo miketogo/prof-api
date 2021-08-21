@@ -35,20 +35,20 @@ module.exports.createUser = (req, res, next) => {
     }))
     .then((user) => {
       return User.findUserByCredentials(email, password)
-      .then((user) => {
-  
-        const token = jwt.sign({ _id: user._id }, jwtSecretPhrase, { expiresIn: '7d' });
-        res.cookie('jwt', token, {
-          maxAge: 3600000 * 24 * 7,
-          httpOnly: true,
-          sameSite: true,
-        });
-        res.send({ token });
-      })
-      .catch(() => {
-        throw new AuthError('Передан неверный логин или пароль');
-      })
-      .catch(next);
+        .then((user) => {
+
+          const token = jwt.sign({ _id: user._id }, jwtSecretPhrase, { expiresIn: '7d' });
+          res.cookie('jwt', token, {
+            maxAge: 3600000 * 24 * 7,
+            httpOnly: true,
+            sameSite: true,
+          });
+          res.send({ token });
+        })
+        .catch(() => {
+          throw new AuthError('Передан неверный логин или пароль');
+        })
+        .catch(next);
     }
     )
     .catch((err) => {
@@ -80,7 +80,7 @@ module.exports.getUserById = (req, res, next) => {
 
 module.exports.getUserByChatId = (req, res, next) => {
   const { chat_id } = req.body;
-  User.findOne({telegram_id: chat_id}).orFail(() => new Error('NotFound'))
+  User.findOne({ telegram_id: chat_id }).orFail(() => new Error('NotFound'))
     .then((user) => res.status(200).send({ user }))
     .catch((err) => {
       if (err.message === 'NotFound') {
@@ -123,25 +123,55 @@ module.exports.updateUserProfile = (req, res, next) => {
 module.exports.conectTg = (req, res, next) => {
   const { email, password, chat_id } = req.body;
 
-  return User.findUserByCredentials(email, password).select('+telegram_id')
+  User.findUserByCredentials(email, password)
     .then((user) => {
-      if (!user.telegram_id){
-          return User.findByIdAndUpdate(user._id, { telegram_id: chat_id}, opts).orFail(() => new Error('NotFound'))
-        .then((user)=>{
-          const token = jwt.sign({ _id: user._id }, jwtSecretPhrase);
-          res.send({ user });
-        })
-      } else {
-        return  new Error('ConflictError')  
+      if (user.telegram_id === 'not connected') {
+        User.findByIdAndUpdate(user._id, { telegram_id: chat_id }, opts).orFail(() => new Error('NotFound'))
+          .then((user) => {
+            res.send({ user });
+          })
+          .catch((err) => {
+            if (err.message === 'NotFound') {
+              throw new NotFoundError('Нет пользователя с таким id');
+            }
+          }).catch(next);
       }
+      else {
+        throw new Error('ConflictError');
+      }
+
     })
-    .catch(() => {
-      if (err.name === 'ConflictError') {
-        throw new InvalidDataError('Пользователь уже авторизован');
+    .catch((err) => {
+      if (err.message === 'ConflictError') {
+        throw new ConflictError('К этому аккаунту уже привязан профиль телеграмм');
+      } else {
+        throw new AuthError('Передан неверный логин или пароль');
       }
-      throw new AuthError('Передан неверный логин или пароль');
+
     })
     .catch(next);
+};
+
+module.exports.disconectTg = (req, res, next) => {
+  const { chat_id } = req.body;
+  if (chat_id !== 'not connected'){
+    User.findOneAndUpdate({ telegram_id: chat_id }, { telegram_id: 'not connected' }, {
+      new: true, // обработчик then получит на вход обновлённую запись
+    }).orFail(() => new Error('NotFound'))
+      .then((user) => res.status(200).send({ user }))
+      .catch((err) => {
+        if (err.message === 'NotFound') {
+          throw new NotFoundError('Нет пользователя с таким chat id');
+        }
+        if (err.name === 'ValidationError' || err.name === 'CastError') {
+          throw new InvalidDataError('Переданы некорректные данные при поиске пользователя по chat id');
+        }
+      })
+      .catch(next);
+  }
+  else {
+    throw new ConflictError('Недопустимое значение chat id');
+  }
 };
 
 

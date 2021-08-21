@@ -4,7 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const { errors, celebrate, Joi } = require('celebrate');
-const { login, createUser, conectTg, getUserByChatId } = require('./controllers/users');
+const { login, createUser, conectTg, getUserByChatId, disconectTg} = require('./controllers/users');
 const NotFoundError = require('./errors/not-found-err');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const auth = require('./middlewares/auth');
@@ -55,6 +55,11 @@ const CORS_WHITELIST = [
       chat_id: Joi.string().required(),
     })
   }), conectTg);
+  app.post('/disconect-tg', celebrate({
+    body: Joi.object().keys({
+      chat_id: Joi.string().required(),
+    })
+  }), disconectTg);
   app.get('/tg-user', celebrate({
     body: Joi.object().keys({
       chat_id: Joi.string().required(),

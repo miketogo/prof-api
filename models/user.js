@@ -51,7 +51,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         unique: true,
         default: 'not connected',
-        select: false,
     },
 });
 
