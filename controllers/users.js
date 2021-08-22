@@ -5,6 +5,7 @@ const NotFoundError = require('../errors/not-found-err');
 const ConflictError = require('../errors/сonflict-err');
 const InvalidDataError = require('../errors/invalid-data-err');
 const AuthError = require('../errors/auth-err');
+const user = require('../models/user');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -33,7 +34,7 @@ module.exports.createUser = (req, res, next) => {
       flat,
       password: hash, // записываем хеш в базу
     }))
-    .then((user) => {
+    .then(() => {
       return User.findUserByCredentials(email, password)
         .then((user) => {
 
@@ -44,9 +45,6 @@ module.exports.createUser = (req, res, next) => {
             sameSite: true,
           });
           res.send({ token });
-        })
-        .catch(() => {
-          throw new AuthError('Передан неверный логин или пароль');
         })
         .catch(next);
     }
@@ -120,44 +118,37 @@ module.exports.updateUserProfile = (req, res, next) => {
 
     .catch(next);
 };
-module.exports.conectTg = (req, res, next) => {
+module.exports.connect= (req, res, next) => {
   const { email, password, chat_id } = req.body;
+  
+    User.findUserByCredentials(email, password)
+      .then((user) => {
+        console.log(user.telegram_id)
+        if (user.telegram_id !== '') {
+          throw new ConflictError('К этому аккаунту уже привязан профиль телеграмм');
+        }
+        else {
+          User.findByIdAndUpdate(user._id, { telegram_id: chat_id }, opts).orFail(() => new Error('NotFound'))
+            .then((user) => {
+              res.send({ user });
+            })
+            .catch((err) => {
+              if (err.message === 'NotFound') {
+                throw new NotFoundError('Нет пользователя с таким id');
+              }
 
-  User.findUserByCredentials(email, password)
-    .then((user) => {
-      if (user.telegram_id === 'not connected') {
-        User.findByIdAndUpdate(user._id, { telegram_id: chat_id }, opts).orFail(() => new Error('NotFound'))
-          .then((user) => {
-            res.send({ user });
-          })
-          .catch((err) => {
-            if (err.message === 'NotFound') {
-              throw new NotFoundError('Нет пользователя с таким id');
-            }
-          }).catch(next);
-      }
-      else {
-        throw new Error('ConflictError');
-      }
+            }).catch(next);
+        }
 
-    })
-    .catch((err) => {
-      if (err.message === 'ConflictError') {
-        throw new ConflictError('К этому аккаунту уже привязан профиль телеграмм');
-      } else {
-        throw new AuthError('Передан неверный логин или пароль');
-      }
+      })
+      .catch(next);
+  }
 
-    })
-    .catch(next);
-};
-
-module.exports.disconectTg = (req, res, next) => {
+module.exports.disconnect = (req, res, next) => {
   const { chat_id } = req.body;
-  if (chat_id !== 'not connected'){
-    User.findOneAndUpdate({ telegram_id: chat_id }, { telegram_id: 'not connected' }, {
-      new: true, // обработчик then получит на вход обновлённую запись
-    }).orFail(() => new Error('NotFound'))
+  console.log(chat_id)
+  if (chat_id !== '') {
+    User.findOneAndUpdate({ telegram_id: chat_id }, { telegram_id: '' }, opts).orFail(() => new Error('NotFound'))
       .then((user) => res.status(200).send({ user }))
       .catch((err) => {
         if (err.message === 'NotFound') {

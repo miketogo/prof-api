@@ -4,7 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const { errors, celebrate, Joi } = require('celebrate');
-const { login, createUser, conectTg, getUserByChatId, disconectTg} = require('./controllers/users');
+const { login, createUser} = require('./controllers/users');
 const NotFoundError = require('./errors/not-found-err');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const auth = require('./middlewares/auth');
@@ -48,23 +48,6 @@ const CORS_WHITELIST = [
       password: Joi.string().required(),
     })
   }), login);
-  app.post('/conect-tg', celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().required(),
-      password: Joi.string().required(),
-      chat_id: Joi.string().required(),
-    })
-  }), conectTg);
-  app.post('/disconect-tg', celebrate({
-    body: Joi.object().keys({
-      chat_id: Joi.string().required(),
-    })
-  }), disconectTg);
-  app.get('/tg-user', celebrate({
-    body: Joi.object().keys({
-      chat_id: Joi.string().required(),
-    })
-  }), getUserByChatId);
   app.post('/signup', celebrate({
     body: Joi.object().keys({
       email: Joi.string().required(),
@@ -77,6 +60,7 @@ const CORS_WHITELIST = [
   }), createUser);
 
   app.use('/survey', require('./routes/surveyResults'));
+  app.use('/telegram', require('./routes/telegram'));
   app.use('/users', auth, require('./routes/users'));
   // app.use('/cards', auth, require('./routes/cards'));
   
