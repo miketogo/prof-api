@@ -62,6 +62,7 @@ const CORS_WHITELIST = [
   app.use('/survey', require('./routes/surveyResults'));
   app.use('/telegram', require('./routes/telegram'));
   app.use('/users', auth, require('./routes/users'));
+  app.use('/appeals', auth, require('./routes/appeals'));
   // app.use('/cards', auth, require('./routes/cards'));
   
   // eslint-disable-next-line no-unused-vars
