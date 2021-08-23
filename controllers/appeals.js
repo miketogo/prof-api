@@ -39,6 +39,7 @@ module.exports.createAppeal = (req, res, next) => {
 };
 
 module.exports.getUserAppeals = (req, res, next) => {
+    console.log(req.user._id)
     Appeal.find({ owner: req.user._id })
         .then((appeals) => res.status(200).send({ appeals }))
         .catch(next);

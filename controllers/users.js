@@ -148,7 +148,7 @@ module.exports.disconnect = (req, res, next) => {
   const { chat_id } = req.body;
   console.log(chat_id)
   if (chat_id !== '') {
-    User.findOneAndUpdate({ telegram_id: chat_id }, { telegram_id: '' }, opts).orFail(() => new Error('NotFound'))
+    User.findByIdAndUpdate(req.user._id, { telegram_id: '' }, opts).orFail(() => new Error('NotFound'))
       .then((user) => res.status(200).send({ user }))
       .catch((err) => {
         if (err.message === 'NotFound') {

@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
+const auth = require('../middlewares/auth');
 const {
     connect, getUserByChatId, disconnect
 } = require('../controllers/users');
@@ -15,7 +16,7 @@ router.post('/disconnect', celebrate({
     body: Joi.object().keys({
         chat_id: Joi.string().required(),
     })
-}), disconnect);
+}), auth, disconnect);
 router.get('/user', celebrate({
     body: Joi.object().keys({
         chat_id: Joi.string().required(),
