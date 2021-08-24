@@ -6,6 +6,8 @@ const ConflictError = require('../errors/сonflict-err');
 const InvalidDataError = require('../errors/invalid-data-err');
 const AuthError = require('../errors/auth-err');
 const user = require('../models/user');
+const mailer = require('../nodemailer');
+const regEmailHtml = require('../emails/regEmail')
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -23,12 +25,12 @@ module.exports.getUsers = (req, res, next) => {
 
 module.exports.createUser = (req, res, next) => {
   const {
-    firstname, secondname, email, password, house, flat,
+    fullname, email, password, house, flat,
   } = req.body;
+
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
-      firstname,
-      secondname,
+      fullname,
       house,
       email,
       flat,
@@ -37,13 +39,22 @@ module.exports.createUser = (req, res, next) => {
     .then(() => {
       return User.findUserByCredentials(email, password)
         .then((user) => {
-
           const token = jwt.sign({ _id: user._id }, jwtSecretPhrase, { expiresIn: '7d' });
           res.cookie('jwt', token, {
             maxAge: 3600000 * 24 * 7,
             httpOnly: true,
             sameSite: true,
           });
+          const massage = {
+            to: email,
+            subject: 'Подтвердите адресс электронной почты',
+            text: ` Подтвердите адрес электронной почты
+            
+                    Пожалуйста нажмите кнопку или перейдите по ссылке ниже для подтверждения адреса электронной почты
+                    http://localhost:3000/emailCheck/${token}`, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
+            html: `${regEmailHtml(token, 'http://localhost:3000/emailCheck/', fullname)}`
+          }
+          mailer(massage)
           res.send({ token });
         })
         .catch(next);
@@ -51,6 +62,7 @@ module.exports.createUser = (req, res, next) => {
     )
     .catch((err) => {
       if (err.name === 'MongoError' && err.code === 11000) {
+        console.log(err)
         throw new ConflictError('При регистрации указан email, который уже существует на сервере');
       }
       if (err.name === 'ValidationError') {
@@ -94,8 +106,8 @@ module.exports.getUserByChatId = (req, res, next) => {
 module.exports.updateUserProfile = (req, res, next) => {
   User.findById(req.user._id).orFail(() => new Error('NotFound'))
     .then((user) => {
-      const { firstname = user.firstname, secondname = user.secondname, flat = user.flat, house = user.house } = req.body;
-      User.findByIdAndUpdate(req.user._id, { firstname, secondname, flat, house }, opts).orFail(() => new Error('NotFound'))
+      const { fullname = user.fullname, flat = user.flat, house = user.house } = req.body;
+      User.findByIdAndUpdate(req.user._id, { fullname, flat, house }, opts).orFail(() => new Error('NotFound'))
         .then((user) => res.status(200).send({ user }))
         .catch((err) => {
           if (err.message === 'NotFound') {
@@ -118,31 +130,31 @@ module.exports.updateUserProfile = (req, res, next) => {
 
     .catch(next);
 };
-module.exports.connect= (req, res, next) => {
+module.exports.connect = (req, res, next) => {
   const { email, password, chat_id } = req.body;
-  
-    User.findUserByCredentials(email, password)
-      .then((user) => {
-        console.log(user.telegram_id)
-        if (user.telegram_id !== '') {
-          throw new ConflictError('К этому аккаунту уже привязан профиль телеграмм');
-        }
-        else {
-          User.findByIdAndUpdate(user._id, { telegram_id: chat_id }, opts).orFail(() => new Error('NotFound'))
-            .then((user) => {
-              res.send({ user });
-            })
-            .catch((err) => {
-              if (err.message === 'NotFound') {
-                throw new NotFoundError('Нет пользователя с таким id');
-              }
 
-            }).catch(next);
-        }
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      console.log(user.telegram_id)
+      if (user.telegram_id !== '') {
+        throw new ConflictError('К этому аккаунту уже привязан профиль телеграмм');
+      }
+      else {
+        User.findByIdAndUpdate(user._id, { telegram_id: chat_id }, opts).orFail(() => new Error('NotFound'))
+          .then((user) => {
+            res.send({ user });
+          })
+          .catch((err) => {
+            if (err.message === 'NotFound') {
+              throw new NotFoundError('Нет пользователя с таким id');
+            }
 
-      })
-      .catch(next);
-  }
+          }).catch(next);
+      }
+
+    })
+    .catch(next);
+}
 
 module.exports.disconnect = (req, res, next) => {
   const { chat_id } = req.body;

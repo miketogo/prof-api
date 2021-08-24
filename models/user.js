@@ -4,17 +4,10 @@ const bcrypt = require('bcryptjs');
 const AuthError = require('../errors/auth-err');
 // Опишем схему:
 const userSchema = new mongoose.Schema({
-    firstname: {
+    fullname: {
         type: String,
         required: true,
-        minlength: 2,
-        maxlength: 30,
-    },
-    secondname: {
-        type: String,
-        required: true,
-        minlength: 2,
-        maxlength: 30,
+        minlength: 2
     },
     house: {
         type: String,
@@ -43,6 +36,13 @@ const userSchema = new mongoose.Schema({
             },
         },
     },
+
+    emailVerified:{
+        type: Boolean,
+        required: true,
+        default: false,
+    },
+
     password: {
         type: String,
         required: true,

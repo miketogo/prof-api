@@ -52,13 +52,12 @@ const CORS_WHITELIST = [
     body: Joi.object().keys({
       email: Joi.string().required(),
       password: Joi.string().required(),
-      firstname: Joi.string().required(),
-      secondname: Joi.string().required(),
+      fullname: Joi.string().required(),
       house: Joi.string().required(),
       flat: Joi.number().min(1).required(),
     }),
   }), createUser);
-
+  app.use('/emailCheck', require('./routes/emailCheck'));
   app.use('/survey', require('./routes/surveyResults'));
   app.use('/telegram', require('./routes/telegram'));
   app.use('/users', auth, require('./routes/users'));
