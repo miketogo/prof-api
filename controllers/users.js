@@ -51,8 +51,8 @@ module.exports.createUser = (req, res, next) => {
             text: ` Подтвердите адрес электронной почты
             
                     Пожалуйста нажмите кнопку или перейдите по ссылке ниже для подтверждения адреса электронной почты
-                    http://localhost:3000/emailCheck/${token}`, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
-            html: `${regEmailHtml(token, 'http://localhost:3000/emailCheck/', fullname)}`
+                    http://renat-hamatov.ru/emailCheck/${token}`, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
+            html: `${regEmailHtml(token, 'http://renat-hamatov.ru/emailCheck/', fullname)}`
           }
           mailer(massage)
           res.send({ token });
