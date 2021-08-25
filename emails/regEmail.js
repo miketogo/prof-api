@@ -148,7 +148,7 @@ a[x-apple-data-detectors='true'] {
       <td style="overflow-wrap:break-word;word-break:break-word;padding:20px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
         
   <div style="line-height: 140%; text-align: center; word-wrap: break-word;">
-    <p style="font-size: 14px; line-height: 140%;">${name.match(/\s([А-ЯЁ][а-яё]+[\-\s]?)/g)}, пожалуйста нажмите кнопку или перейдите по ссылке ниже для подтверждения адреса электронной почты</p>
+    <p style="font-size: 14px; line-height: 140%;">${name}, пожалуйста нажмите кнопку или перейдите по ссылке ниже для подтверждения адреса электронной почты</p>
   </div>
 
       </td>

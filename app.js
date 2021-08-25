@@ -44,23 +44,25 @@ const CORS_WHITELIST = [
   // app.use(cors(corsOption));
   app.post('/signin', celebrate({
     body: Joi.object().keys({
-      email: Joi.string().required(),
-      password: Joi.string().required(),
+      email: Joi.string().min(3).required(),
+      password: Joi.string().min(8).required(),
     })
   }), login);
   app.post('/signup', celebrate({
     body: Joi.object().keys({
-      email: Joi.string().required(),
-      password: Joi.string().required(),
-      fullname: Joi.string().required(),
-      house: Joi.string().required(),
+      email: Joi.string().min(3).required(),
+      password: Joi.string().min(8).required(),
+      fullname: Joi.string().min(1).required(),
+      house: Joi.string().min(1).required(),
       flat: Joi.number().min(1).required(),
+      phone: Joi.string().min(11).required(),
     }),
   }), createUser);
   app.use('/emailCheck', require('./routes/emailCheck'));
   app.use('/survey', require('./routes/surveyResults'));
   app.use('/telegram', require('./routes/telegram'));
   app.use('/users', auth, require('./routes/users'));
+  app.use('/houses', auth, require('./routes/houses'));
   app.use('/appeals', auth, require('./routes/appeals'));
   // app.use('/cards', auth, require('./routes/cards'));
   

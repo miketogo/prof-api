@@ -6,7 +6,12 @@ const {
 } = require('../controllers/appeals');
 
 router.get('/all',checkSuperUser, getAppeals);
-router.post('/create', createAppeal);
+router.post('/create', celebrate({
+    body: Joi.object().keys({
+      text: Joi.string().min(1).required(),
+      image: Joi.string(),
+    }),
+  }), createAppeal);
 router.get('/my', getUserAppeals);
 
 module.exports = router;

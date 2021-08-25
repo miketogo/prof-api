@@ -9,15 +9,40 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength: 2
     },
-    house: {
+    lastname: {
         type: String,
         required: true,
-        minlength: 2,
-        maxlength: 30,
+        minlength: 2
+    },
+    firstname: {
+        type: String,
+        required: true,
+        minlength: 2
+    },
+    patronymic: {
+        type: String,
+        required: true,
+        minlength: 2
     },
     flat: {
         type: Number,
         required: true,
+        validate: { 
+            validator(v) { 
+                return v >= 1; 
+            },
+            message: 'Квартира должна быть больше или равна 1!', 
+        }
+    },
+    entranceNumber: {
+        type: Number,
+        required: true,
+        validate: { 
+            validator(v) { 
+                return v >= 1; 
+            },
+            message: 'Парадная должна быть больше или равна 1!', 
+        }
     },
     user_rights: {
         type: String,
@@ -25,6 +50,7 @@ const userSchema = new mongoose.Schema({
         maxlength: 30,
         default: 'default',
         select: false,
+        required: true,
     },
     email: {
         type: String,
@@ -42,7 +68,11 @@ const userSchema = new mongoose.Schema({
         required: true,
         default: false,
     },
-
+    phone:{
+        type: String,
+        required: true,
+    }
+    ,
     password: {
         type: String,
         required: true,
@@ -51,6 +81,16 @@ const userSchema = new mongoose.Schema({
     telegram_id: {
         type: String,
         default: '',
+    },
+    registrationDate: {
+        type: Date,
+        default: Date.now,
+        required: true,
+    },
+    house: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'house',
+        required: true,
     },
 });
 
