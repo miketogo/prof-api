@@ -9,7 +9,6 @@ const jwtSecretPhrase = NODE_ENV !== 'production' ? 'e20f5a33bee3a1991d9da7e4db3
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
   const { chat_id } = req.body;
-  console.log(chat_id)
   if (!authorization || !authorization.startsWith('Bearer ')) {
     if (chat_id){
       

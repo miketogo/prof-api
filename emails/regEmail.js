@@ -118,12 +118,7 @@ a[x-apple-data-detectors='true'] {
     <td style="padding-right: 0px;padding-left: 0px;" align="center">
       
       
-      <svg width="32" height="32" img align="center" border="0" alt="Image" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 32px;" width="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M22.2005 0.431267C22.2005 0.193085 22.0063 0 21.7669 0C21.5274 0 21.3333 0.193085 21.3333 0.431267V6.12399C21.3333 6.36217 21.5274 6.55526 21.7669 6.55526C22.0063 6.55526 22.2005 6.36217 22.2005 6.12399V0.431267Z" fill="white"/>
-      <path d="M31.5152 31.1375H0.398049C0.178212 31.1375 0 31.3147 0 31.5334C0 31.752 0.178212 31.9293 0.398049 31.9293H31.5152C31.7351 31.9293 31.9133 31.752 31.9133 31.5334C31.9133 31.3147 31.7351 31.1375 31.5152 31.1375Z" fill="white"/>
-      <path d="M15.6617 0.280051L0.281413 15.5775C0.125923 15.7322 0.125922 15.9829 0.281412 16.1376C0.436901 16.2921 0.689 16.2921 0.844489 16.1376L16.2248 0.840092C16.3803 0.685441 16.3803 0.434701 16.2248 0.28005C16.0693 0.125399 15.8172 0.1254 15.6617 0.280051Z" fill="white"/>
-      <path d="M15.7179 0.840093L31.0983 16.1376C31.2538 16.2922 31.5059 16.2922 31.6614 16.1376C31.8169 15.9829 31.8169 15.7322 31.6614 15.5775L16.281 0.280052C16.1255 0.125401 15.8734 0.125399 15.7179 0.28005C15.5624 0.434702 15.5624 0.685441 15.7179 0.840093Z" fill="white"/>
-    </svg>
+    <img align="center" border="0" src="https://i.ibb.co/g4SmMgC/Logo-prof.png" alt="Image" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 32px;" width="32"/>
     </td>
   </tr>
 </table>
