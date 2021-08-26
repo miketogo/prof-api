@@ -9,6 +9,7 @@ const Appeal = require('../models/appeal');
 const mailer = require('../nodemailer');
 const appealCreateEmailHtml = require('../emails/appelCreateEmail')
 const appelChangeStatusEmailHtml = require('../emails/appelChangeStatusEmail')
+const appelRejectEmailHtml = require('../emails/appelRejectEmail')
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 const opts = {
