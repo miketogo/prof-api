@@ -27,15 +27,6 @@ const appealSchema = new mongoose.Schema({
         default: 'waiting',
         enum: ['waiting', 'in_work', 'done', 'rejected']
     },
-    dateOfStatus_Done: {
-        type: Date,
-    },
-    dateOfStatus_InWork: {
-        type: Date,
-    },
-    dateOfStatus_Rejected: {
-        type: Date,
-    },
     rejectReason: {
         type: String,
     },
