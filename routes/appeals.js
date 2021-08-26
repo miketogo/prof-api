@@ -10,7 +10,7 @@ router.post('/create', celebrate({
     body: Joi.object().keys({
       text: Joi.string().min(1).required(),
       image: Joi.string(),
-    }),
+    }).unknown(true),
   }), createAppeal);
 router.get('/my', getUserAppeals);
 
