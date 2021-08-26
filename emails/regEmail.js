@@ -179,7 +179,7 @@ a[x-apple-data-detectors='true'] {
     <tr>
       <td style="overflow-wrap:break-word;word-break:break-word;padding:20px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
         
-  <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
+  <div style="line-height: 140%; text-align: center; padding: 0px 0px 150px 0; word-wrap: break-word;">
     <p style="font-size: 14px; line-height: 140%;">${link+token}/</p>
   </div>
 
