@@ -8,6 +8,7 @@ const { login, createUser} = require('./controllers/users');
 const NotFoundError = require('./errors/not-found-err');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const auth = require('./middlewares/auth');
+const authByChatId = require('./middlewares/authByChatId');
 
 const { PORT = 3000 } = process.env;
 
