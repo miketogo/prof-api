@@ -368,7 +368,26 @@ module.exports.connect = (req, res, next) => {
       if (user.telegram_id !== '') {
         throw new ConflictError('К этому аккаунту уже привязан профиль телеграмм');
       }
+
       else {
+        if (!user.emailVerified) {
+          const token = jwt.sign({ _id: user._id }, jwtSecretPhrase, { expiresIn: '7d' });
+          res.cookie('jwt', token, {
+            maxAge: 3600000 * 24 * 7,
+            httpOnly: true,
+            sameSite: true,
+          });
+          const massage = {
+            to: emailLowerCase.trim(),
+            subject: 'Подтвердите адресс электронной почты',
+            text: ` Подтвердите адрес электронной почты
+        
+                Пожалуйста нажмите кнопку или перейдите по ссылке ниже для подтверждения адреса электронной почты
+                http://renat-hamatov.ru/emailCheck/${token}`, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
+            html: `${regEmailHtml(token, 'http://renat-hamatov.ru/emailCheck/', user.firstname)}`
+          }
+          mailer(massage)
+        }
         User.findByIdAndUpdate(user._id, { telegram_id: chat_id }, opts).orFail(() => new Error('NotFound'))
           .then((user) => {
             res.send({ user });
