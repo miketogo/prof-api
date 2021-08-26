@@ -136,7 +136,7 @@ module.exports.getUserById = (req, res, next) => {
 };
 
 module.exports.getUserByChatId = (req, res, next) => {
-  const { chat_id } = req.headers;
+  const { chat_id } = req.params;
   User.findOne({ telegram_id: chat_id }).orFail(() => new Error('NotFound'))
   .populate('house')
     .then((user) => res.status(200).send({ user }))
@@ -370,7 +370,7 @@ module.exports.updateUserProfile = (req, res, next) => {
 
 module.exports.connect = (req, res, next) => {
   const { email, password } = req.body;
-  const { chat_id } = req.headers;
+  const { chat_id } = req.params;
   let emailLowerCase = email.toLowerCase();
   User.findUserByCredentials(emailLowerCase, password)
     .then((user) => {
@@ -416,7 +416,7 @@ module.exports.connect = (req, res, next) => {
 }
 
 module.exports.disconnect = (req, res, next) => {
-  const { chat_id } = req.headers;
+  const { chat_id } = req.params;
   console.log(chat_id)
   if (chat_id !== '') {
     User.findByIdAndUpdate(req.user._id, { telegram_id: '' }, opts).orFail(() => new Error('NotFound'))
