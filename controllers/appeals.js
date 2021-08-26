@@ -178,11 +178,17 @@ module.exports.changeStatus = (req, res, next) => {
 
 module.exports.createAppeal = (req, res, next) => {
     const {
-        text, image,
+        text, image, chat_id
     } = req.body;
     User.findById(req.user._id).orFail(() => new Error('NotFound'))
         .then((user) => {
             if (user.emailVerified) {
+                let howReceived
+                if(!chat_id){
+                    howReceived = 'Через сайт'
+                } else {
+                    howReceived = 'Через телеграм бота'
+                }
                 const realDate = new Date
                 let date = moment(realDate)
                 Appeal.create({

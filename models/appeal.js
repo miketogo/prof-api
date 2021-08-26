@@ -30,6 +30,10 @@ const appealSchema = new mongoose.Schema({
     rejectReason: {
         type: String,
     },
+    howReceived:{
+        type: String,
+        required: true,
+    },
     adminsChangedStatus: [
         {
             admin_id: {
