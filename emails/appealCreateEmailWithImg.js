@@ -176,8 +176,8 @@ const appealCreateEmailWithImgHtml = (headText, status, date, text, photoLink) =
                                 <p style="font-size: 16px; line-height: 160%; margin-top:30px; color: #fff; text-align: center">Текст обращения:</p>
                                 <p style="font-size: 14px; line-height: 140%; margin-top:10px; color: #fff; text-align: center">${text}</p>
                                 <p style="font-size: 16px; line-height: 160%; margin-top:30px; color: #fff; text-align: center">Фото:</p>
-                                <img align="center" border="0" src="${photoLink}" alt="Фото из вашей жалобы" title="Фото из вашей жалобы" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 200px; "
-                                      width="200" />
+                                <img align="center" border="0" src="${photoLink}" alt="Фото из вашей жалобы" title="Фото из вашей жалобы" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 480px;"
+                                      width="480" />
                               </div>
 
                             </td>
