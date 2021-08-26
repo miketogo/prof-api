@@ -44,11 +44,11 @@ module.exports.changeStatus = (req, res, next) => {
     } = req.body;
     if (status === 'in_work' || status === 'done' || status === 'waiting') {
         let statusText
-        if (appeal.status === 'waiting') {
+        if (status === 'waiting') {
             statusText = 'В ожидании'
-        } else if (appeal.status === 'in_work') {
+        } else if (status === 'in_work') {
             statusText = 'В работе'
-        } else if (appeal.status === 'done') {
+        } else if (status === 'done') {
             statusText = 'Выполнено'
         }
         const realDate = new Date
