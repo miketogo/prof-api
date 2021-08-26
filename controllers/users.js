@@ -11,6 +11,8 @@ const regEmailHtml = require('../emails/regEmail')
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
+const apiLink = 'http://renat-hamatov.ru/emailCheck/'
+
 const jwtSecretPhrase = NODE_ENV !== 'production' ? 'e20f5a33bee3a1991d9da7e4db38281f9e97b36e0b1293af2c58035fbe34075f' : JWT_SECRET;
 const opts = {
   new: true,
@@ -78,8 +80,8 @@ module.exports.createUser = (req, res, next) => {
                 text: ` Подтвердите адрес электронной почты
             
                     Пожалуйста нажмите кнопку или перейдите по ссылке ниже для подтверждения адреса электронной почты
-                    http://renat-hamatov.ru/emailCheck/${token}`, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
-                html: `${regEmailHtml(token, 'http://renat-hamatov.ru/emailCheck/', names[1])}`
+                    ${apiLink}${token}`, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
+                html: `${regEmailHtml(token, apiLink, names[1])}`
               }
               mailer(massage)
               res.send({ token });
@@ -196,8 +198,8 @@ module.exports.updateUserProfile = (req, res, next) => {
                   text: ` Подтвердите адрес электронной почты
             
                     Пожалуйста нажмите кнопку или перейдите по ссылке ниже для подтверждения адреса электронной почты
-                    http://renat-hamatov.ru/emailCheck/${token}`, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
-                  html: `${regEmailHtml(token, 'http://renat-hamatov.ru/emailCheck/', names[1])}`
+                    ${apiLink}${token}`, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
+                  html: `${regEmailHtml(token, apiLink, names[1])}`
                 }
                 mailer(massage)
                 res.status(200).send({ user })
@@ -315,8 +317,8 @@ module.exports.updateUserProfile = (req, res, next) => {
               text: ` Подтвердите адрес электронной почты
       
               Пожалуйста нажмите кнопку или перейдите по ссылке ниже для подтверждения адреса электронной почты
-              http://renat-hamatov.ru/emailCheck/${token}`, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
-              html: `${regEmailHtml(token, 'http://renat-hamatov.ru/emailCheck/', names[1])}`
+              ${apiLink}${token}`, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
+              html: `${regEmailHtml(token, apiLink, names[1])}`
             }
             mailer(massage)
             res.status(200).send({ user })
@@ -383,8 +385,8 @@ module.exports.connect = (req, res, next) => {
             text: ` Подтвердите адрес электронной почты
         
                 Пожалуйста нажмите кнопку или перейдите по ссылке ниже для подтверждения адреса электронной почты
-                http://renat-hamatov.ru/emailCheck/${token}`, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
-            html: `${regEmailHtml(token, 'http://renat-hamatov.ru/emailCheck/', user.firstname)}`
+                ${apiLink}${token}`, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
+            html: `${regEmailHtml(token, apiLink, user.firstname)}`
           }
           mailer(massage)
         }

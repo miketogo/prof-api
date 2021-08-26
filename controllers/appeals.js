@@ -53,7 +53,7 @@ module.exports.createAppeal = (req, res, next) => {
                     } else if (appeal.status === 'rejected'){
                         status = 'Отклонено'
                     }
-                    const moscowDate = moment(appeal.date).tz("Europe/Moscow")
+                    const moscowDate = moment(appeal.dateOfRequest).tz("Europe/Moscow")
                     
                     const revertDate = moscowDate.toISOString().split('T')[0]
                     const date = `${revertDate.split('-')[2]}.${revertDate.split('-')[1]}.${revertDate.split('-')[0]}`

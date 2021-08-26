@@ -11,7 +11,7 @@ const appealSchema = new mongoose.Schema({
         required: true,
         default: 'not image',
     },
-    date: {
+    dateOfRequest: {
         type: Date,
         default: Date.now,
         required: true,
@@ -24,8 +24,21 @@ const appealSchema = new mongoose.Schema({
     status: {
         type: String,
         required: true,
-        default: 'waiting'
+        default: 'waiting',
+        enum: ['waiting', 'in_work', 'done', 'rejected']
     },
+    dateOfStatus_Done:{
+        type: Date,
+    },
+    dateOfStatus_InWork:{
+        type: Date,
+    },
+    dateOfStatus_Rejected:{
+        type: Date,
+    },
+    rejectReason:{
+        type: String,
+    }
 });
 
 // создаём модель и экспортируем её
