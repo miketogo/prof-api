@@ -65,6 +65,7 @@ const CORS_WHITELIST = [
   app.use('/users', auth, require('./routes/users'));
   app.use('/houses', auth, require('./routes/houses'));
   app.use('/appeals', auth, require('./routes/appeals'));
+  app.use('/appeals/:chat_id', auth, require('./routes/appeals'));
   // app.use('/cards', auth, require('./routes/cards'));
   
   // eslint-disable-next-line no-unused-vars
