@@ -7,7 +7,7 @@ const {
 router.get('/:token',celebrate({
     // валидируем параметры
     params: Joi.object().keys({
-        token: Joi.string().alphanum().min(3).max(200).required(),
+        token: Joi.string().min(3).max(200).required(),
     }),
   }), verifyEmail);
 
