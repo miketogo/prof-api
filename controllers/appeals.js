@@ -10,6 +10,10 @@ const mailer = require('../nodemailer');
 const appealCreateEmailHtml = require('../emails/appelCreateEmail')
 
 const { NODE_ENV, JWT_SECRET } = process.env;
+const opts = {
+    new: true,
+    runValidators: true,
+};
 
 // const massage = {
 //     to: email,
@@ -33,6 +37,78 @@ module.exports.getAppeals = (req, res, next) => {
         .catch(next);
 };
 
+module.exports.changeStatus = (req, res, next) => {
+    const {
+        status, appeal_id,
+    } = req.body;
+    if (status === 'in_work') {
+        let statusText = 'В работе'
+        const realDate = new Date
+        let date = moment(realDate)
+        console.log(date)
+        Appeal.findById(appeal_id).orFail(() => new Error('NotFound'))
+            .then((appeal) => {
+
+                let adminsChangedStatus = {
+                    admin_id: req.user._id,
+                    time: date,
+                    appeal_previous_status: appeal.status,
+                    appeal_new_status: status,
+                }
+                let newAdminsChangedStatus = appeal.adminsChangedStatus
+                newAdminsChangedStatus.push(adminsChangedStatus)
+                console.log(newAdminsChangedStatus)
+                Appeal.findByIdAndUpdate(appeal_id, {
+                    status: status,
+                    dateOfStatus_InWork: date,
+                    adminsChangedStatus: newAdminsChangedStatus,
+                }, opts).orFail(() => new Error('NotFound'))
+                    .populate(['adminsChangedStatus.admin_id', 'owner'])
+                    .then((appeal) => {
+                        const moscowDate = moment(appeal.dateOfStatus_InWork).tz("Europe/Moscow")
+                        const revertDate = moscowDate.toISOString().split('T')[0]
+                        const date = `${revertDate.split('-')[2]}.${revertDate.split('-')[1]}.${revertDate.split('-')[0]}`
+                        const massage = {
+                            to: appeal.owner.email,
+                            subject: 'Статус вашего обращения изменен',
+                            text: `Статус вашего обращения изменен на: ${statusText}
+                            
+                            Отслеживать статус обращения можно в разделе Мои обращения.
+                            При изменении статуса вам будет отправлено письмо.`, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
+                            html: `${appealCreateEmailHtml(`Статус вашего обращения изменен на: ${statusText}`,statusText, date, appeal.text)}`
+                        }
+                        mailer(massage)
+                        res.status(200).send({ appeal })
+                    })
+                    .catch((err) => {
+                        console.log(err)
+                        if (err.message === 'NotFound') {
+                            throw new NotFoundError('Нет пользователя с таким id');
+                        }
+                        if (err.name === 'ValidationError') {
+                            throw new InvalidDataError('Переданы некорректные данные при создании обращения');
+                        }
+                    })
+                    .catch(next)
+            })
+            .catch((err) => {
+                console.log(err)
+                if (err.message === 'NotFound') {
+                    throw new NotFoundError('Нет пользователя с таким id');
+                }
+                if (err.name === 'ValidationError') {
+                    throw new InvalidDataError('Переданы некорректные данные при создании обращения');
+                }
+            })
+            .catch(next)
+
+    } else if (status === 'done') {
+
+    } else if (status === 'rejected') {
+
+    }
+};
+
 module.exports.createAppeal = (req, res, next) => {
     const {
         text, image,
@@ -40,8 +116,10 @@ module.exports.createAppeal = (req, res, next) => {
     User.findById(req.user._id).orFail(() => new Error('NotFound'))
         .then((user) => {
             if (user.emailVerified) {
+                const realDate = new Date
+                let date = moment(realDate)
                 Appeal.create({
-                    text, image, owner: user._id, // записываем хеш в базу
+                    text, image, owner: user._id, dateOfRequest: date // записываем хеш в базу
                 })
                     .then((appeal) => {
                         let status;
@@ -55,7 +133,6 @@ module.exports.createAppeal = (req, res, next) => {
                             status = 'Отклонено'
                         }
                         const moscowDate = moment(appeal.dateOfRequest).tz("Europe/Moscow")
-
                         const revertDate = moscowDate.toISOString().split('T')[0]
                         const date = `${revertDate.split('-')[2]}.${revertDate.split('-')[1]}.${revertDate.split('-')[0]}`
                         const massage = {
@@ -64,7 +141,7 @@ module.exports.createAppeal = (req, res, next) => {
                             text: `Отслеживать статус обращения можно в разделе Мои обращения.
                     
                         При изменении статуса вам будет отправлено письмо.`, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
-                            html: `${appealCreateEmailHtml(status, date, appeal.text)}`
+                            html: `${appealCreateEmailHtml('Ваше обращение принято в обработку',status, date, appeal.text)}`
                         }
                         mailer(massage)
                         res.send({ appeal });

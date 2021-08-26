@@ -27,18 +27,41 @@ const appealSchema = new mongoose.Schema({
         default: 'waiting',
         enum: ['waiting', 'in_work', 'done', 'rejected']
     },
-    dateOfStatus_Done:{
+    dateOfStatus_Done: {
         type: Date,
     },
-    dateOfStatus_InWork:{
+    dateOfStatus_InWork: {
         type: Date,
     },
-    dateOfStatus_Rejected:{
+    dateOfStatus_Rejected: {
         type: Date,
     },
-    rejectReason:{
+    rejectReason: {
         type: String,
-    }
+    },
+    adminsChangedStatus: [
+        {
+            admin_id: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'user',
+                required: true,
+            },
+            time: {
+                type: Date,
+            },
+            appeal_previous_status: {
+                type: String,
+                required: true,
+                enum: ['waiting', 'in_work', 'done', 'rejected']
+            } ,
+            appeal_new_status: {
+                type: String,
+                required: true,
+                enum: ['waiting', 'in_work', 'done', 'rejected']
+            },
+            
+        }
+    ]
 });
 
 // создаём модель и экспортируем её

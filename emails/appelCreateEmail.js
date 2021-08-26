@@ -1,4 +1,4 @@
-const appealCreateEmailHtml = (status, date, text) => {return `<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+const appealCreateEmailHtml = (headText, status, date, text) => {return `<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 
 <head>
@@ -142,7 +142,7 @@ const appealCreateEmailHtml = (status, date, text) => {return `<!DOCTYPE HTML PU
                             <td style="overflow-wrap:break-word;word-break:break-word;padding:35px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
 
                               <h1 style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-weight: normal; font-family: arial,helvetica,sans-serif; font-size: 22px;">
-                                Ваше обращение принято в обработку
+                                ${headText}
                               </h1>
 
                             </td>
@@ -157,7 +157,7 @@ const appealCreateEmailHtml = (status, date, text) => {return `<!DOCTYPE HTML PU
 
                               <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
                                 <p style="font-size: 14px; line-height: 140%; text-align: center;">Отслеживать статус обращения можно на сайте в разделе Мои обращения.</p>
-                                <p style="font-size: 14px; line-height: 140%; text-align: center; margin-top:15px;">При изменении статуса вам будет отправлено письмо.</p>
+                                <p style="font-size: 14px; line-height: 140%; text-align: center; margin-top:15px;">При изменении статуса обращеня Вам будет отправлено письмо.</p>
                               </div>
 
                             </td>

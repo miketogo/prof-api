@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const checkSuperUser = require('../middlewares/checkSuperUser');
 const {
-    getAppeals, createAppeal, getUserAppeals,
+    getAppeals, createAppeal, getUserAppeals, changeStatus
 } = require('../controllers/appeals');
 
 router.get('/all',checkSuperUser, getAppeals);
@@ -13,5 +13,6 @@ router.post('/create', celebrate({
     }).unknown(true),
   }), createAppeal);
 router.get('/my', getUserAppeals);
+router.patch('/change-status', checkSuperUser, changeStatus)
 
 module.exports = router;
