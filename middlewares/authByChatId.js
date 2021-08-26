@@ -16,6 +16,7 @@ module.exports = (req, res, next) => {
       .then((user) => {
         
         req.user = user
+        req.chat_id = true
         next()
       })
       .catch((err)=>{

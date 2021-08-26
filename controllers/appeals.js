@@ -242,7 +242,6 @@ module.exports.createAppeal = (req, res, next) => {
     let {
         text, image
     } = req.body;
-    const { chat_id } = req.params;
     if (req.text && req.imageLink) {
         text = req.text
         image = req.imageLink
@@ -255,7 +254,7 @@ module.exports.createAppeal = (req, res, next) => {
         .then((user) => {
             if (user.emailVerified) {
                 let howReceived
-                if (!chat_id) {
+                if (!req.chat_id) {
                     howReceived = 'Через сайт'
                 } else {
                     howReceived = 'Через телеграм бота'
