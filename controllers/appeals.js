@@ -283,7 +283,7 @@ module.exports.createAppeal = (req, res, next) => {
                         const moscowDate = moment(appeal.dateOfRequest).tz("Europe/Moscow")
                         const revertDate = moscowDate.toISOString().split('T')[0]
                         const date = `${revertDate.split('-')[2]}.${revertDate.split('-')[1]}.${revertDate.split('-')[0]}`
-                        if (!image || image === '/uploads/undefined') {
+                        if (!image || image === 'not image') {
                             const massage = {
                                 to: user.email,
                                 subject: 'Ваше обращение принято в обработку',
