@@ -9,18 +9,20 @@ router.post('/connect', celebrate({
     body: Joi.object().keys({
         email: Joi.string().required(),
         password: Joi.string().required(),
+    }),
+    headers: Joi.object().keys({
         chat_id: Joi.string().required(),
-    })
+    }).unknown(true)
 }), connect);
 router.post('/disconnect', celebrate({
-    body: Joi.object().keys({
+    headers: Joi.object().keys({
         chat_id: Joi.string().required(),
-    })
+    }).unknown(true)
 }), auth, disconnect);
 router.get('/user', celebrate({
-    body: Joi.object().keys({
+    headers: Joi.object().keys({
         chat_id: Joi.string().required(),
-    })
+    }).unknown(true)
 }), getUserByChatId);
 
 

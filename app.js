@@ -58,6 +58,7 @@ const CORS_WHITELIST = [
       phone: Joi.string().min(11).required(),
     }),
   }), createUser);
+  app.use('/uploads', express.static('uploads'));
   app.use('/emailCheck', require('./routes/emailCheck'));
   app.use('/survey', require('./routes/surveyResults'));
   app.use('/telegram', require('./routes/telegram'));

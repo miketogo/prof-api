@@ -1,4 +1,7 @@
 const moment = require('moment-timezone');
+const multer = require('multer')
+const path = require('path')
+
 
 const User = require('../models/user');
 const NotFoundError = require('../errors/not-found-err');
@@ -9,7 +12,9 @@ const Appeal = require('../models/appeal');
 const mailer = require('../nodemailer');
 const appealCreateEmailHtml = require('../emails/appelCreateEmail')
 const appelChangeStatusEmailHtml = require('../emails/appelChangeStatusEmail')
-const appelRejectEmailHtml = require('../emails/appelRejectEmail')
+const appelRejectEmailHtml = require('../emails/appelRejectEmail');
+const user = require('../models/user');
+
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 const opts = {
@@ -17,6 +22,62 @@ const opts = {
     runValidators: true,
 };
 
+
+
+// async function heicToJpg(file, output) {
+//     console.log(file, output);
+//     const inputBuffer = await promisify(fs.readFile)(file);
+//     const outputBuffer = convert({
+//         buffer: inputBuffer, // the HEIC file buffer
+//         format: 'PNG', // output format
+//     });
+//     return promisify(fs.writeFile)(output, outputBuffer);
+// }
+module.exports.uploadImage = (req, res, next) => {
+    let newFileName
+    const storage = multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, 'uploads')
+        },
+        filename: (req, file, cb) => {
+            newFileName = `${req.user._id}_${Date.now()}${path.extname(file.originalname)}`
+            cb(null, newFileName)
+        }
+    })
+
+    const upload = multer({
+        storage,
+        limits: { fileSize: 3 * 1024 * 1024 },
+        fileFilter: (req, file, cb) => {
+            const ext = path.extname(file.originalname);
+            if (ext !== '.jpg' && ext !== '.jpeg' && ext !== '.png') {
+                const err = new Error('ExtentionError')
+                return cb(err)
+            }
+            cb(null, true)
+        }
+    }).single('csv')
+
+    upload(req, res, err => {
+        const formData = req.body;
+        console.log(req.body)
+        let error = ''
+        if (err && err.code === 'LIMIT_FILE_SIZE') {
+            error = 'Слишком большое изображение';
+        }
+        if (err && err.message === 'ExtentionError') {
+            error = 'Можно загружать только картинки(png, jpg, jpeg)';
+        }
+        if (err) {
+            res.status(400).send({ error })
+        } else{
+            req.text = formData.text
+            req.imageLink = `/uploads/${newFileName}`
+            next()
+        }
+
+    })
+}
 // const massage = {
 //     to: email,
 //     subject: 'Ваше обращение принято в обработку',
@@ -177,9 +238,18 @@ module.exports.changeStatus = (req, res, next) => {
 };
 
 module.exports.createAppeal = (req, res, next) => {
-    const {
-        text, image, chat_id
+    let {
+        text, image
     } = req.body;
+    const { chat_id } = req.headers;
+    if(req.text && req.imageLink){
+        text = req.text
+        image = req.imageLink
+    }
+    if(image === '/uploads/undefined'){
+        image = 'not image'
+    }
+
     User.findById(req.user._id).orFail(() => new Error('NotFound'))
         .then((user) => {
             if (user.emailVerified) {
@@ -253,3 +323,4 @@ module.exports.getUserAppeals = (req, res, next) => {
         .then((appeals) => res.status(200).send({ appeals }))
         .catch(next);
 };
+
