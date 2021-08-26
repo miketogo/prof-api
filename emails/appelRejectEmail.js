@@ -156,7 +156,7 @@ const appelRejectEmailHtml = (headText, rejectReason, status, date, text) => {re
                             <td style="overflow-wrap:break-word;word-break:break-word;padding:20px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
 
                               <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
-                                <p style="font-size: 14px; line-height: 140%; text-align: center;">Ваше обращение было <span style="font-size: 14px; line-height: 140%;  color: #FF3055;>отклонено</span></p>
+                                <p style="font-size: 14px; line-height: 140%; text-align: center;">Ваше обращение было <span style="font-size: 14px; line-height: 140%;  color: #FF3055; ">отклонено</span></p>
                                 <p style="font-size: 14px; line-height: 140%; text-align: center; margin-top:15px;">Отслеживать статус обращения можно на сайте в разделе Мои обращения.</p>
                               </div>
 
