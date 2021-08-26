@@ -11,6 +11,7 @@ const AuthError = require('../errors/auth-err');
 const Appeal = require('../models/appeal');
 const mailer = require('../nodemailer');
 const appealCreateEmailHtml = require('../emails/appelCreateEmail')
+const appealCreateEmailWithImgHtml = require('../emails/appealCreateEmailWithImg')
 const appelChangeStatusEmailHtml = require('../emails/appelChangeStatusEmail')
 const appelRejectEmailHtml = require('../emails/appelRejectEmail');
 const user = require('../models/user');
@@ -70,7 +71,7 @@ module.exports.uploadImage = (req, res, next) => {
         }
         if (err) {
             res.status(400).send({ error })
-        } else{
+        } else {
             req.text = formData.text
             req.imageLink = `/uploads/${newFileName}`
             next()
@@ -242,11 +243,11 @@ module.exports.createAppeal = (req, res, next) => {
         text, image
     } = req.body;
     const { chat_id } = req.headers;
-    if(req.text && req.imageLink){
+    if (req.text && req.imageLink) {
         text = req.text
         image = req.imageLink
     }
-    if(image === '/uploads/undefined'){
+    if (image === '/uploads/undefined') {
         image = 'not image'
     }
 
@@ -282,15 +283,28 @@ module.exports.createAppeal = (req, res, next) => {
                         const moscowDate = moment(appeal.dateOfRequest).tz("Europe/Moscow")
                         const revertDate = moscowDate.toISOString().split('T')[0]
                         const date = `${revertDate.split('-')[2]}.${revertDate.split('-')[1]}.${revertDate.split('-')[0]}`
-                        const massage = {
-                            to: user.email,
-                            subject: 'Ваше обращение принято в обработку',
-                            text: `Отслеживать статус обращения можно в разделе Мои обращения.
-                    
-                        При изменении статуса вам будет отправлено письмо.`, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
-                            html: `${appealCreateEmailHtml('Ваше обращение принято в обработку', status, date, appeal.text)}`
+                        if (!image || image === '/uploads/undefined') {
+                            const massage = {
+                                to: user.email,
+                                subject: 'Ваше обращение принято в обработку',
+                                text: `Отслеживать статус обращения можно в разделе Мои обращения.
+                        
+                            При изменении статуса вам будет отправлено письмо.`, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
+                                html: `${appealCreateEmailHtml('Ваше обращение принято в обработку', status, date, appeal.text)}`
+                            }
+                            mailer(massage)
+                        } else {
+                            const massage = {
+                                to: user.email,
+                                subject: 'Ваше обращение принято в обработку',
+                                text: `Отслеживать статус обращения можно в разделе Мои обращения.
+                        
+                            При изменении статуса вам будет отправлено письмо.`, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
+                                html: `${appealCreateEmailWithImgHtml('Ваше обращение принято в обработку', status, date, appeal.text, `https://renat-hamatov.ru${image}`)}`
+                            }
+                            mailer(massage)
                         }
-                        mailer(massage)
+                        
                         res.send({ appeal });
                     }
                     )
