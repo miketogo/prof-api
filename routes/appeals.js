@@ -7,10 +7,10 @@ const {
 
 router.get('/all',checkSuperUser, getAppeals);
 router.post('/create', celebrate({
-
-    query: Joi.object().keys({
-        text: Joi.string().min(1).required(),
-      }),
+    body: Joi.object().keys({
+      text: Joi.string().min(1).required(),
+      image: Joi.string(),
+    }).unknown(true),
   }), createAppeal);
 router.get('/my', getUserAppeals);
 

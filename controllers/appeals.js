@@ -35,7 +35,7 @@ module.exports.getAppeals = (req, res, next) => {
 module.exports.createAppeal = (req, res, next) => {
     const {
         text, image,
-    } = req.query;
+    } = req.body;
     User.findById(req.user._id).orFail(() => new Error('NotFound'))
     .then((user)=>{
         if (user.emailVerified){
