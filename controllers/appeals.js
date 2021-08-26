@@ -72,7 +72,7 @@ module.exports.changeStatus = (req, res, next) => {
                 }, opts).orFail(() => new Error('NotFound'))
                     .populate(['adminsChangedStatus.admin_id', 'owner'])
                     .then((appeal) => {
-                        const moscowDate = moment(appeal.adminsChangedStatus.admin_id.time).tz("Europe/Moscow")
+                        const moscowDate = moment(date).tz("Europe/Moscow")
                         const revertDate = moscowDate.toISOString().split('T')[0]
                         const date = `${revertDate.split('-')[2]}.${revertDate.split('-')[1]}.${revertDate.split('-')[0]}`
                         const massage = {
@@ -133,7 +133,7 @@ module.exports.changeStatus = (req, res, next) => {
                 }, opts).orFail(() => new Error('NotFound'))
                     .populate(['adminsChangedStatus.admin_id', 'owner'])
                     .then((appeal) => {
-                        const moscowDate = moment(appeal.adminsChangedStatus.admin_id.time).tz("Europe/Moscow")
+                        const moscowDate = moment(date).tz("Europe/Moscow")
                         const revertDate = moscowDate.toISOString().split('T')[0]
                         const date = `${revertDate.split('-')[2]}.${revertDate.split('-')[1]}.${revertDate.split('-')[0]}`
                         const massage = {
