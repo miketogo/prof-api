@@ -13,8 +13,11 @@ router.get('/:userId', celebrate({
 }), getUserById);
 router.patch('/me', celebrate({
   body: Joi.object().keys({
-    fullname: Joi.string().min(2),
-  }).unknown(true),
+    fullname: Joi.string().min(2).required(),
+    flat: Joi.number().min(1).required(),
+    phone: Joi.string().min(11).required(),
+    email: Joi.string().min(3).required(),
+  }),
 }), updateUserProfile);
 
 

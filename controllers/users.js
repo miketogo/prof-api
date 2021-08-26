@@ -149,7 +149,7 @@ module.exports.getUserByChatId = (req, res, next) => {
 module.exports.updateUserProfile = (req, res, next) => {
   User.findById(req.user._id).orFail(() => new Error('NotFound'))
     .then((user) => {
-      const { fullname = user.fullname, flat = user.flat, email = user.email } = req.body;
+      const { fullname = user.fullname, flat = user.flat, email = user.email, phone = user.phone } = req.body;
       let names = fullname.trim().split(/\s+/);
       if (flat != user.flat && email.trim() != user.email) {
         House.findById(user.house).orFail(() => new Error('HouseNotFound'))
@@ -181,6 +181,7 @@ module.exports.updateUserProfile = (req, res, next) => {
               email: emailLowerCase.trim(),
               entranceNumber: entnum,
               emailVerified: false,
+              phone: phone.trim(),
             }, opts).orFail(() => new Error('NotFound'))
               .then((user) => {
                 const token = jwt.sign({ _id: user._id }, jwtSecretPhrase, { expiresIn: '7d' });
@@ -247,7 +248,8 @@ module.exports.updateUserProfile = (req, res, next) => {
               firstname: names[1].trim(),
               patronymic: names[2].trim(),
               flat,
-              entranceNumber: entnum
+              entranceNumber: entnum,
+              phone: phone.trim(),
             }, opts).orFail(() => new Error('NotFound'))
               .then((user) => {
                 res.status(200).send({ user })
@@ -281,7 +283,8 @@ module.exports.updateUserProfile = (req, res, next) => {
           firstname: names[1].trim(),
           patronymic: names[2].trim(),
           email: emailLowerCase.trim(),
-          emailVerified: false
+          emailVerified: false,
+          phone: phone.trim(),
         }, opts).orFail(() => new Error('NotFound'))
           .then((user) => {
             const token = jwt.sign({ _id: user._id }, jwtSecretPhrase, { expiresIn: '7d' });
@@ -316,6 +319,7 @@ module.exports.updateUserProfile = (req, res, next) => {
           lastname: names[0].trim(),
           firstname: names[1].trim(),
           patronymic: names[2].trim(),
+          phone: phone.trim(),
         }, opts).orFail(() => new Error('NotFound'))
           .then((user) => res.status(200).send({ user }))
           .catch((err) => {
