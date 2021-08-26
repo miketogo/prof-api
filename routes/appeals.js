@@ -8,8 +8,8 @@ const {
 
 router.get('/all', checkSuperUser, getAppeals);
 
-router.post('/create', uploadImage, createAppeal);
-router.get('/my', getUserAppeals);
+router.post('/create/:chat_id', uploadImage, createAppeal);
+router.get('/my/:chat_id', getUserAppeals);
 router.patch('/change-status', checkSuperUser, changeStatus)
 
 module.exports = router;

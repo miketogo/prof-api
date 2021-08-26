@@ -242,7 +242,7 @@ module.exports.createAppeal = (req, res, next) => {
     let {
         text, image
     } = req.body;
-    const { chat_id } = req.headers;
+    const { chat_id } = req.params;
     if (req.text && req.imageLink) {
         text = req.text
         image = req.imageLink
