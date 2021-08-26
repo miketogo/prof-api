@@ -420,7 +420,7 @@ module.exports.disconnect = (req, res, next) => {
   console.log(chat_id)
   if (chat_id !== '') {
     User.findByIdAndUpdate(req.user._id, { telegram_id: '' }, opts).orFail(() => new Error('NotFound'))
-      .then((user) => res.status(200).send({ user }))
+      .then((user) => res.status(200).send({ disconnected: true }))
       .catch((err) => {
         if (err.message === 'NotFound') {
           throw new NotFoundError('Нет пользователя с таким chat id');
