@@ -203,6 +203,7 @@ module.exports.updateUserProfile = (req, res, next) => {
                 res.status(200).send({ user })
               })
               .catch((err) => {
+
                 if (err.message === 'NotFound') {
                   throw new NotFoundError('Нет пользователя с таким id');
                 }
@@ -213,6 +214,12 @@ module.exports.updateUserProfile = (req, res, next) => {
           }
           )
           .catch((err) => {
+            if (err.message === 'FlatDoesntExist') {
+              throw new InvalidDataError('Такой квартиры нет в доме');
+            }
+            if (err.message === 'NotCorrectFullname') {
+              throw new InvalidDataError('Переданны некоректные данные в поле fullname, оно должно содержать только Фамилию, Имя, и Отчество');
+            }
             if (err.message === 'NotFound') {
               throw new NotFoundError('Нет пользователя с таким id');
             }
@@ -265,6 +272,12 @@ module.exports.updateUserProfile = (req, res, next) => {
           }
           )
           .catch((err) => {
+            if (err.message === 'FlatDoesntExist') {
+              throw new InvalidDataError('Такой квартиры нет в доме');
+            }
+            if (err.message === 'NotCorrectFullname') {
+              throw new InvalidDataError('Переданны некоректные данные в поле fullname, оно должно содержать только Фамилию, Имя, и Отчество');
+            }
             if (err.message === 'NotFound') {
               throw new NotFoundError('Нет пользователя с таким id');
             }
@@ -277,6 +290,9 @@ module.exports.updateUserProfile = (req, res, next) => {
       }
       else if (flat === user.flat && email.trim() != user.email) {
         let emailLowerCase = email.toLowerCase();
+        if (names.length != 3) {
+          throw new Error('NotCorrectFullname')
+        }
         User.findByIdAndUpdate(req.user._id, {
           fullname: fullname.trim(),
           lastname: names[0].trim(),
@@ -309,11 +325,17 @@ module.exports.updateUserProfile = (req, res, next) => {
             if (err.message === 'NotFound') {
               throw new NotFoundError('Нет пользователя с таким id');
             }
+            if (err.message === 'NotCorrectFullname') {
+              throw new InvalidDataError('Переданны некоректные данные в поле fullname, оно должно содержать только Фамилию, Имя, и Отчество');
+            }
             if (err.name === 'ValidationError' || err.name === 'CastError') {
               throw new InvalidDataError('Переданы некорректные данные при обновлении профиля');
             }
           }).catch(next);
       } else {
+        if (names.length != 3) {
+          throw new Error('NotCorrectFullname')
+        }
         User.findByIdAndUpdate(req.user._id, {
           fullname: fullname.trim(),
           lastname: names[0].trim(),
@@ -325,6 +347,9 @@ module.exports.updateUserProfile = (req, res, next) => {
           .catch((err) => {
             if (err.message === 'NotFound') {
               throw new NotFoundError('Нет пользователя с таким id');
+            }
+            if (err.message === 'NotCorrectFullname') {
+              throw new InvalidDataError('Переданны некоректные данные в поле fullname, оно должно содержать только Фамилию, Имя, и Отчество');
             }
             if (err.name === 'ValidationError' || err.name === 'CastError') {
               throw new InvalidDataError('Переданы некорректные данные при обновлении профиля');
