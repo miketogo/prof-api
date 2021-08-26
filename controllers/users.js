@@ -21,6 +21,7 @@ const opts = {
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
+  .populate('house')
     .then((users) => res.status(200).send({ users }))
     .catch(next);
 };
@@ -121,6 +122,7 @@ module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId === 'me'
     ? req.user._id
     : req.params.userId).orFail(() => new Error('NotFound'))
+    .populate('house')
     .then((user) => res.status(200).send({ user }))
     .catch((err) => {
       if (err.message === 'NotFound') {
@@ -136,6 +138,7 @@ module.exports.getUserById = (req, res, next) => {
 module.exports.getUserByChatId = (req, res, next) => {
   const { chat_id } = req.body;
   User.findOne({ telegram_id: chat_id }).orFail(() => new Error('NotFound'))
+  .populate('house')
     .then((user) => res.status(200).send({ user }))
     .catch((err) => {
       if (err.message === 'NotFound') {
@@ -185,6 +188,7 @@ module.exports.updateUserProfile = (req, res, next) => {
               emailVerified: false,
               phone: phone.trim(),
             }, opts).orFail(() => new Error('NotFound'))
+            .populate('house')
               .then((user) => {
                 const token = jwt.sign({ _id: user._id }, jwtSecretPhrase, { expiresIn: '7d' });
                 res.cookie('jwt', token, {
@@ -260,6 +264,7 @@ module.exports.updateUserProfile = (req, res, next) => {
               entranceNumber: entnum,
               phone: phone.trim(),
             }, opts).orFail(() => new Error('NotFound'))
+            .populate('house')
               .then((user) => {
                 res.status(200).send({ user })
               })
@@ -304,6 +309,7 @@ module.exports.updateUserProfile = (req, res, next) => {
           emailVerified: false,
           phone: phone.trim(),
         }, opts).orFail(() => new Error('NotFound'))
+        .populate('house')
           .then((user) => {
             const token = jwt.sign({ _id: user._id }, jwtSecretPhrase, { expiresIn: '7d' });
             res.cookie('jwt', token, {
@@ -345,6 +351,7 @@ module.exports.updateUserProfile = (req, res, next) => {
           patronymic: names[2].trim(),
           phone: phone.trim(),
         }, opts).orFail(() => new Error('NotFound'))
+        .populate('house')
           .then((user) => res.status(200).send({ user }))
           .catch((err) => {
             if (err.message === 'NotFound') {
@@ -391,6 +398,7 @@ module.exports.connect = (req, res, next) => {
           mailer(massage)
         }
         User.findByIdAndUpdate(user._id, { telegram_id: chat_id }, opts).orFail(() => new Error('NotFound'))
+        .populate('house')
           .then((user) => {
             res.send({ user });
           })
