@@ -184,7 +184,7 @@ module.exports.createAppeal = (req, res, next) => {
         .then((user) => {
             if (user.emailVerified) {
                 let howReceived
-                if(!chat_id){
+                if (!chat_id) {
                     howReceived = 'Через сайт'
                 } else {
                     howReceived = 'Через телеграм бота'
@@ -192,7 +192,11 @@ module.exports.createAppeal = (req, res, next) => {
                 const realDate = new Date
                 let date = moment(realDate)
                 Appeal.create({
-                    text: text.trim(), image, owner: user._id, dateOfRequest: date // записываем хеш в базу
+                    text: text.trim(),
+                    image,
+                    owner: user._id,
+                    dateOfRequest: date,
+                    howReceived: howReceived, // записываем хеш в базу
                 })
                     .then((appeal) => {
                         let status;
