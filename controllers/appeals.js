@@ -42,7 +42,7 @@ module.exports.createAppeal = (req, res, next) => {
             if (user.emailVerified) {
                 Appeal.create({
                     text, image, owner: user._id, // записываем хеш в базу
-                }).populate('owner')
+                })
                     .then((appeal) => {
                         let status;
                         if (appeal.status === 'waiting') {
@@ -96,7 +96,6 @@ module.exports.createAppeal = (req, res, next) => {
 module.exports.getUserAppeals = (req, res, next) => {
     console.log(req.user._id)
     Appeal.find({ owner: req.user._id })
-    .populate('owner')
         .then((appeals) => res.status(200).send({ appeals }))
         .catch(next);
 };
