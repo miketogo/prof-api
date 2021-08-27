@@ -9,6 +9,7 @@ const ConflictError = require('../errors/сonflict-err');
 const InvalidDataError = require('../errors/invalid-data-err');
 const AuthError = require('../errors/auth-err');
 const Appeal = require('../models/appeal');
+const HeicToChange = require('../models/heicToChange');
 const mailer = require('../nodemailer');
 const appealCreateEmailHtml = require('../emails/appelCreateEmail')
 const appealCreateEmailWithImgHtml = require('../emails/appealCreateEmailWithImg')
@@ -35,14 +36,32 @@ const opts = {
 //     return promisify(fs.writeFile)(output, outputBuffer);
 // }
 module.exports.uploadImage = (req, res, next) => {
-    let newFileName
+    let fileName
+    let fileNameWithExt
+    let fileExt
     const storage = multer.diskStorage({
         destination: (req, file, cb) => {
-            cb(null, 'uploads')
+            const ext = path.extname(file.originalname);
+            if (ext === '.heic') {
+                cb(null, 'uploads/heic')
+            } else {
+                cb(null, 'uploads')
+            }
         },
         filename: (req, file, cb) => {
-            newFileName = `${req.user._id}_${Date.now()}${path.extname(file.originalname)}`
-            cb(null, newFileName)
+            fileName = `${req.user._id}_${Date.now()}`
+            fileExt = `${path.extname(file.originalname)}`
+            fileNameWithExt = `${fileName}${path.extname(file.originalname)}`
+            if(fileExt === '.heic'){
+                HeicToChange.create({name: fileName})
+                .then(cb(null, fileNameWithExt))
+                .catch(next)
+            }
+            else {
+                cb(null, fileNameWithExt)
+            }
+
+
         }
     })
 
@@ -51,18 +70,18 @@ module.exports.uploadImage = (req, res, next) => {
         limits: { fileSize: 3 * 1024 * 1024 },
         fileFilter: (req, file, cb) => {
             const ext = path.extname(file.originalname);
-            if (ext !== '.jpg' && ext !== '.jpeg' && ext !== '.png') {
+            if (ext !== '.jpg' && ext !== '.jpeg' && ext !== '.png' && ext !== '.heic') {
                 const err = new Error('ExtentionError')
                 return cb(err)
             }
             cb(null, true)
         }
-    }).single('csv')
+    }).single('image')
 
     upload(req, res, err => {
         const formData = req.body;
         console.log(req.body)
-        let error = ''
+        let error = err
         if (err && err.code === 'LIMIT_FILE_SIZE') {
             error = 'Слишком большое изображение';
         }
@@ -73,8 +92,13 @@ module.exports.uploadImage = (req, res, next) => {
             res.status(400).send({ error })
         } else {
             req.text = formData.text
-            req.imageLink = `/uploads/${newFileName}`
-            next()
+            if(fileExt === '.heic'){
+                req.imageLink = `/uploads/${fileName}.jpg`
+                setTimeout(next, 7000); 
+            } else {
+                req.imageLink = `/uploads/${fileNameWithExt}`
+                next()
+            } 
         }
 
     })
@@ -303,7 +327,7 @@ module.exports.createAppeal = (req, res, next) => {
                             }
                             mailer(massage)
                         }
-                        
+
                         res.send({ appeal });
                     }
                     )
