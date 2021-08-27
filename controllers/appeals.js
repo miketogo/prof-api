@@ -139,7 +139,7 @@ module.exports.changeStatus = (req, res, next) => {
             statusText = 'Выполнено'
         }
         const realDate = new Date
-        let date = moment(realDate)
+        let date = moment(realDate.toISOString()).tz("Europe/Moscow").format('D.MM.YYYY  HH:mm')
         console.log(date)
         Appeal.findById(appeal_id).orFail(() => new Error('NotFound'))
             .then((appeal) => {
@@ -159,9 +159,7 @@ module.exports.changeStatus = (req, res, next) => {
                 }, opts).orFail(() => new Error('NotFound'))
                     .populate(['adminsChangedStatus.admin_id', 'owner'])
                     .then((appeal) => {
-                        const moscowDate = moment(realDate).tz("Europe/Moscow")
-                        const revertDate = moscowDate.toISOString().split('T')[0]
-                        const date = `${revertDate.split('-')[2]}.${revertDate.split('-')[1]}.${revertDate.split('-')[0]}`
+                        const date = moment(realDate.toISOString()).tz("Europe/Moscow").format('D.MM.YYYY  HH:mm')
                         const title = 'Статус вашего обращения изменен'
                         const text = `Статус вашего обращения изменен на: ${statusText}
                             
@@ -171,6 +169,7 @@ module.exports.changeStatus = (req, res, next) => {
                             title: title,
                             text: text,
                             to_user: appeal.owner._id,
+                            date
                         })
                         const massage = {
                             to: appeal.owner.email,
@@ -205,7 +204,7 @@ module.exports.changeStatus = (req, res, next) => {
     } else if (status === 'rejected') {
         let statusText = 'Отклонено'
         const realDate = new Date
-        let date = moment(realDate)
+        let date = moment(realDate.toISOString()).tz("Europe/Moscow").format('D.MM.YYYY  HH:mm')
         console.log(date)
         Appeal.findById(appeal_id).orFail(() => new Error('NotFound'))
             .then((appeal) => {
@@ -227,9 +226,7 @@ module.exports.changeStatus = (req, res, next) => {
                 }, opts).orFail(() => new Error('NotFound'))
                     .populate(['adminsChangedStatus.admin_id', 'owner'])
                     .then((appeal) => {
-                        const moscowDate = moment(realDate).tz("Europe/Moscow")
-                        const revertDate = moscowDate.toISOString().split('T')[0]
-                        const date = `${revertDate.split('-')[2]}.${revertDate.split('-')[1]}.${revertDate.split('-')[0]}`
+                        const date = moment(realDate.toISOString()).tz("Europe/Moscow").format('D.MM.YYYY  HH:mm')
                         const title = 'Ваше обращение было отклонено'
                         const text = `Статус Вашего обращения изменен на: ${statusText}
 
@@ -240,6 +237,7 @@ module.exports.changeStatus = (req, res, next) => {
                         sendEmail.create({
                             title: title,
                             text: text,
+                            date,
                             to_user: appeal.owner._id,
                         })
                         const massage = {
@@ -298,7 +296,7 @@ module.exports.createAppeal = (req, res, next) => {
                     howReceived = 'Через телеграм бота'
                 }
                 const realDate = new Date
-                let date = moment(realDate)
+                let date = moment(realDate.toISOString()).tz("Europe/Moscow").format('D.MM.YYYY  HH:mm')
                 Appeal.create({
                     text: text.trim(),
                     image,
@@ -317,14 +315,13 @@ module.exports.createAppeal = (req, res, next) => {
                         } else if (appeal.status === 'rejected') {
                             status = 'Отклонено'
                         }
-                        const moscowDate = moment(appeal.dateOfRequest).tz("Europe/Moscow")
-                        const revertDate = moscowDate.toISOString().split('T')[0]
-                        const date = `${revertDate.split('-')[2]}.${revertDate.split('-')[1]}.${revertDate.split('-')[0]}`
+                        
                         const title = 'Ваше обращение принято в обработку'
                         const text = `Отслеживать статус обращения можно в разделе Мои обращения.
                         
 При изменении статуса Вам будет отправлено письмо.`
                         sendEmail.create({
+                            date,
                             title: title,
                             text: text,
                             to_user: req.user._id,

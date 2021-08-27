@@ -12,8 +12,7 @@ const appealSchema = new mongoose.Schema({
         default: 'not image',
     },
     dateOfRequest: {
-        type: Date,
-        default: Date.now,
+        type: String,
         required: true,
     },
     owner: {
@@ -30,7 +29,7 @@ const appealSchema = new mongoose.Schema({
     rejectReason: {
         type: String,
     },
-    howReceived:{
+    howReceived: {
         type: String,
         required: true,
     },
@@ -42,19 +41,20 @@ const appealSchema = new mongoose.Schema({
                 required: true,
             },
             time: {
-                type: Date,
+                type: String,
+                required: true,
             },
             appeal_previous_status: {
                 type: String,
                 required: true,
                 enum: ['waiting', 'in_work', 'done', 'rejected']
-            } ,
+            },
             appeal_new_status: {
                 type: String,
                 required: true,
                 enum: ['waiting', 'in_work', 'done', 'rejected']
             },
-            
+
         }
     ]
 });

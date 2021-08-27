@@ -83,8 +83,7 @@ const userSchema = new mongoose.Schema({
         default: '',
     },
     registrationDate: {
-        type: Date,
-        default: Date.now,
+        type: String,
         required: true,
     },
     house: {

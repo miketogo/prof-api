@@ -41,6 +41,10 @@ const surveyResultSchema = new mongoose.Schema({
         type: String,
         required: true,
         minlength: 2,
+    },
+    date:{
+        type: String,
+        required: true,
     }
 });
 

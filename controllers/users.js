@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const moment = require('moment-timezone');
 const User = require('../models/user');
 const NotFoundError = require('../errors/not-found-err');
 const ConflictError = require('../errors/сonflict-err');
@@ -53,7 +54,10 @@ module.exports.createUser = (req, res, next) => {
         throw new Error('NotCorrectFullname')
       }
       let emailLowerCase = email.toLowerCase();
+      const realDate = new Date
+      let date = moment(realDate.toISOString()).tz("Europe/Moscow").format('D.MM.YYYY  HH:mm')
       console.log(names, emailLowerCase, house, house._id)
+      
       bcrypt.hash(password, 10)
         .then((hash) => User.create({
           fullname: fullname.trim(),
@@ -63,6 +67,7 @@ module.exports.createUser = (req, res, next) => {
           house: house._id,
           email: emailLowerCase.trim(),
           flat,
+          registrationDate: date,
           entranceNumber: entnum,
           password: hash,
           phone: phone.trim(), // записываем хеш в базу
@@ -84,6 +89,7 @@ ${apiLink}${token}`
               sendEmail.create({
                 title: title,
                 text: text,
+                date,
                 to_user: user._id,
               })
               const massage = {
@@ -162,6 +168,8 @@ module.exports.getUserByChatId = (req, res, next) => {
 module.exports.updateUserProfile = (req, res, next) => {
   User.findById(req.user._id).orFail(() => new Error('NotFound'))
     .then((user) => {
+      const realDate = new Date
+      let date = moment(realDate.toISOString()).tz("Europe/Moscow").format('D.MM.YYYY  HH:mm')
       const { fullname = user.fullname, flat = user.flat, email = user.email, phone = user.phone } = req.body;
       let names = fullname.trim().split(/\s+/);
       if (flat != user.flat && email.trim() != user.email) {
@@ -212,6 +220,7 @@ ${apiLink}${token}`
                 sendEmail.create({
                   title: title,
                   text: text,
+                  date,
                   to_user: user._id,
                 })
                 const massage = {
@@ -340,6 +349,7 @@ ${apiLink}${token}`
             sendEmail.create({
               title: title,
               text: text,
+              date,
               to_user: user._id,
             })
             const massage = {
