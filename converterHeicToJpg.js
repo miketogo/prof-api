@@ -17,25 +17,27 @@ function convertHeic (){
   .then((heic)=>{
     (async () => {
     const inputBuffer = await promisify(fs.readFile)(`./uploads/heic/${heic.name}.heic`);
+    await promisify(fs.unlink)(`./uploads/heic/${heic.name}.heic`)
     const outputBuffer = await convert({
       buffer: inputBuffer, // the HEIC file buffer
       format: 'JPEG',      // output format
-      quality: 1           // the jpeg compression quality, between 0 and 1
+      quality: 0           // the jpeg compression quality, between 0 and 1
     });
   
     await promisify(fs.writeFile)(`./uploads/${heic.name}.jpg`, outputBuffer);
   })()
     HeicToChange.findByIdAndRemove(heic._id).orFail(() => new Error('NotFound'))
-    .then(setTimeout(convertHeic, 1000))
+    .then(setTimeout(convertHeic, 5000))
     .catch((err)=>{
       console.log(err)
     })
   })
   .catch(()=>{
-    setTimeout(convertHeic, 1000)
+    setTimeout(convertHeic, 500)
   })
 }
 
 convertHeic()
+
  
 

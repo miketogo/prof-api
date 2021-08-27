@@ -15,7 +15,7 @@ const appealCreateEmailHtml = require('../emails/appelCreateEmail')
 const appealCreateEmailWithImgHtml = require('../emails/appealCreateEmailWithImg')
 const appelChangeStatusEmailHtml = require('../emails/appelChangeStatusEmail')
 const appelRejectEmailHtml = require('../emails/appelRejectEmail');
-const user = require('../models/user');
+const sendEmail = require('../models/sendEmail');
 
 
 const { NODE_ENV, JWT_SECRET } = process.env;
@@ -52,10 +52,10 @@ module.exports.uploadImage = (req, res, next) => {
             fileName = `${req.user._id}_${Date.now()}`
             fileExt = `${path.extname(file.originalname)}`
             fileNameWithExt = `${fileName}${path.extname(file.originalname)}`
-            if(fileExt === '.heic'){
-                HeicToChange.create({name: fileName})
-                .then(cb(null, fileNameWithExt))
-                .catch(next)
+            if (fileExt === '.heic') {
+                HeicToChange.create({ name: fileName })
+                    .then(cb(null, fileNameWithExt))
+                    .catch(next)
             }
             else {
                 cb(null, fileNameWithExt)
@@ -92,13 +92,13 @@ module.exports.uploadImage = (req, res, next) => {
             res.status(400).send({ error })
         } else {
             req.text = formData.text
-            if(fileExt === '.heic'){
+            if (fileExt === '.heic') {
                 req.imageLink = `/uploads/${fileName}.jpg`
-                setTimeout(next, 7000); 
+                setTimeout(next, 7000);
             } else {
                 req.imageLink = `/uploads/${fileNameWithExt}`
-                next()
-            } 
+                setTimeout(next, 2000)
+            }
         }
 
     })
@@ -162,13 +162,20 @@ module.exports.changeStatus = (req, res, next) => {
                         const moscowDate = moment(realDate).tz("Europe/Moscow")
                         const revertDate = moscowDate.toISOString().split('T')[0]
                         const date = `${revertDate.split('-')[2]}.${revertDate.split('-')[1]}.${revertDate.split('-')[0]}`
+                        const title = 'Статус вашего обращения изменен'
+                        const text = `Статус вашего обращения изменен на: ${statusText}
+                            
+Отслеживать статус обращения можно в разделе Мои обращения.
+При изменении статуса Вам будет отправлено письмо.`
+                        sendEmail.create({
+                            title: title,
+                            text: text,
+                            to_user: appeal.owner._id,
+                        })
                         const massage = {
                             to: appeal.owner.email,
-                            subject: 'Статус вашего обращения изменен',
-                            text: `Статус вашего обращения изменен на: ${statusText}
-                            
-                            Отслеживать статус обращения можно в разделе Мои обращения.
-                            При изменении статуса Вам будет отправлено письмо.`, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
+                            subject: title,
+                            text: text, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
                             html: `${appelChangeStatusEmailHtml(`Статус вашего обращения изменен на: ${statusText}`, statusText, date, appeal.text)}`
                         }
                         mailer(massage)
@@ -223,15 +230,22 @@ module.exports.changeStatus = (req, res, next) => {
                         const moscowDate = moment(realDate).tz("Europe/Moscow")
                         const revertDate = moscowDate.toISOString().split('T')[0]
                         const date = `${revertDate.split('-')[2]}.${revertDate.split('-')[1]}.${revertDate.split('-')[0]}`
+                        const title = 'Ваше обращение было отклонено'
+                        const text = `Статус Вашего обращения изменен на: ${statusText}
+
+Причина: ${rejectReason.trim()}
+
+Отслеживать статус обращения можно в разделе Мои обращения.
+При изменении статуса Вам будет отправлено письмо.`
+                        sendEmail.create({
+                            title: title,
+                            text: text,
+                            to_user: appeal.owner._id,
+                        })
                         const massage = {
                             to: appeal.owner.email,
-                            subject: 'Ваше обращение было отклонено',
-                            text: `Статус вашего обращения изменен на: ${statusText}
-
-                            Причина: ${rejectReason.trim()}
-
-                            Отслеживать статус обращения можно в разделе Мои обращения.
-                            При изменении статуса вам будет отправлено письмо.`, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
+                            subject: title,
+                            text: text, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
                             html: `${appelRejectEmailHtml(`Статус вашего обращения изменен на: ${statusText}`, rejectReason.trim(), statusText, date, appeal.text)}`
                         }
                         mailer(massage)
@@ -306,23 +320,28 @@ module.exports.createAppeal = (req, res, next) => {
                         const moscowDate = moment(appeal.dateOfRequest).tz("Europe/Moscow")
                         const revertDate = moscowDate.toISOString().split('T')[0]
                         const date = `${revertDate.split('-')[2]}.${revertDate.split('-')[1]}.${revertDate.split('-')[0]}`
+                        const title = 'Ваше обращение принято в обработку'
+                        const text = `Отслеживать статус обращения можно в разделе Мои обращения.
+                        
+При изменении статуса Вам будет отправлено письмо.`
+                        sendEmail.create({
+                            title: title,
+                            text: text,
+                            to_user: req.user._id,
+                        })
                         if (!image || image === 'not image') {
                             const massage = {
                                 to: user.email,
-                                subject: 'Ваше обращение принято в обработку',
-                                text: `Отслеживать статус обращения можно в разделе Мои обращения.
-                        
-                            При изменении статуса вам будет отправлено письмо.`, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
+                                subject: title,
+                                text: text, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
                                 html: `${appealCreateEmailHtml('Ваше обращение принято в обработку', status, date, appeal.text)}`
                             }
                             mailer(massage)
                         } else {
                             const massage = {
                                 to: user.email,
-                                subject: 'Ваше обращение принято в обработку',
-                                text: `Отслеживать статус обращения можно в разделе Мои обращения.
-                        
-                            При изменении статуса вам будет отправлено письмо.`, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
+                                subject: title,
+                                text: text, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
                                 html: `${appealCreateEmailWithImgHtml('Ваше обращение принято в обработку', status, date, appeal.text, `https://renat-hamatov.ru${image}`)}`
                             }
                             mailer(massage)

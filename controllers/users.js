@@ -8,6 +8,7 @@ const AuthError = require('../errors/auth-err');
 const House = require('../models/house');
 const mailer = require('../nodemailer');
 const regEmailHtml = require('../emails/regEmail')
+const sendEmail = require('../models/sendEmail');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -21,7 +22,7 @@ const opts = {
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
-  .populate('house')
+    .populate('house')
     .then((users) => res.status(200).send({ users }))
     .catch(next);
 };
@@ -75,14 +76,21 @@ module.exports.createUser = (req, res, next) => {
                 httpOnly: true,
                 sameSite: true,
               });
+              const title = 'Подтвердите адресс электронной почты'
+              const text = `Подтвердите адрес электронной почты
+            
+Пожалуйста нажмите кнопку или перейдите по ссылке ниже для подтверждения адреса электронной почты
+${apiLink}${token}`
+              sendEmail.create({
+                title: title,
+                text: text,
+                to_user: user._id,
+              })
               const massage = {
                 to: emailLowerCase.trim(),
-                subject: 'Подтвердите адресс электронной почты',
-                text: ` Подтвердите адрес электронной почты
-            
-                    Пожалуйста нажмите кнопку или перейдите по ссылке ниже для подтверждения адреса электронной почты
-                    ${apiLink}${token}`, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
-                html: `${regEmailHtml(token, apiLink, names[1])}`
+                subject: title,
+                text: text,
+                html: `${regEmailHtml(token, apiLink, user.firstname)}`
               }
               mailer(massage)
               res.send({ token });
@@ -138,7 +146,7 @@ module.exports.getUserById = (req, res, next) => {
 module.exports.getUserByChatId = (req, res, next) => {
   const { chat_id } = req.params;
   User.findOne({ telegram_id: chat_id }).orFail(() => new Error('NotFound'))
-  .populate('house')
+    .populate('house')
     .then((user) => res.status(200).send({ user }))
     .catch((err) => {
       if (err.message === 'NotFound') {
@@ -188,7 +196,7 @@ module.exports.updateUserProfile = (req, res, next) => {
               emailVerified: false,
               phone: phone.trim(),
             }, opts).orFail(() => new Error('NotFound'))
-            .populate('house')
+              .populate('house')
               .then((user) => {
                 const token = jwt.sign({ _id: user._id }, jwtSecretPhrase, { expiresIn: '7d' });
                 res.cookie('jwt', token, {
@@ -196,14 +204,21 @@ module.exports.updateUserProfile = (req, res, next) => {
                   httpOnly: true,
                   sameSite: true,
                 });
+                const title = 'Подтвердите адресс электронной почты'
+                const text = `Подтвердите адрес электронной почты
+            
+Пожалуйста нажмите кнопку или перейдите по ссылке ниже для подтверждения адреса электронной почты
+${apiLink}${token}`
+                sendEmail.create({
+                  title: title,
+                  text: text,
+                  to_user: user._id,
+                })
                 const massage = {
                   to: emailLowerCase.trim(),
-                  subject: 'Подтвердите адресс электронной почты',
-                  text: ` Подтвердите адрес электронной почты
-            
-                    Пожалуйста нажмите кнопку или перейдите по ссылке ниже для подтверждения адреса электронной почты
-                    ${apiLink}${token}`, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
-                  html: `${regEmailHtml(token, apiLink, names[1])}`
+                  subject: title,
+                  text: text, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
+                  html: `${regEmailHtml(token, apiLink, user.firstname)}`
                 }
                 mailer(massage)
                 res.status(200).send({ user })
@@ -264,7 +279,7 @@ module.exports.updateUserProfile = (req, res, next) => {
               entranceNumber: entnum,
               phone: phone.trim(),
             }, opts).orFail(() => new Error('NotFound'))
-            .populate('house')
+              .populate('house')
               .then((user) => {
                 res.status(200).send({ user })
               })
@@ -309,7 +324,7 @@ module.exports.updateUserProfile = (req, res, next) => {
           emailVerified: false,
           phone: phone.trim(),
         }, opts).orFail(() => new Error('NotFound'))
-        .populate('house')
+          .populate('house')
           .then((user) => {
             const token = jwt.sign({ _id: user._id }, jwtSecretPhrase, { expiresIn: '7d' });
             res.cookie('jwt', token, {
@@ -317,14 +332,21 @@ module.exports.updateUserProfile = (req, res, next) => {
               httpOnly: true,
               sameSite: true,
             });
+            const title = 'Подтвердите адресс электронной почты'
+            const text = `Подтвердите адрес электронной почты
+        
+Пожалуйста нажмите кнопку или перейдите по ссылке ниже для подтверждения адреса электронной почты
+${apiLink}${token}`
+            sendEmail.create({
+              title: title,
+              text: text,
+              to_user: user._id,
+            })
             const massage = {
               to: emailLowerCase.trim(),
-              subject: 'Подтвердите адресс электронной почты',
-              text: ` Подтвердите адрес электронной почты
-      
-              Пожалуйста нажмите кнопку или перейдите по ссылке ниже для подтверждения адреса электронной почты
-              ${apiLink}${token}`, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
-              html: `${regEmailHtml(token, apiLink, names[1])}`
+              subject: title,
+              text: text, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
+              html: `${regEmailHtml(token, apiLink, user.firstname)}`
             }
             mailer(massage)
             res.status(200).send({ user })
@@ -351,7 +373,7 @@ module.exports.updateUserProfile = (req, res, next) => {
           patronymic: names[2].trim(),
           phone: phone.trim(),
         }, opts).orFail(() => new Error('NotFound'))
-        .populate('house')
+          .populate('house')
           .then((user) => res.status(200).send({ user }))
           .catch((err) => {
             if (err.message === 'NotFound') {
@@ -387,19 +409,26 @@ module.exports.connect = (req, res, next) => {
             httpOnly: true,
             sameSite: true,
           });
+          const title = 'Подтвердите адресс электронной почты'
+          const text = `Подтвердите адрес электронной почты
+      
+Пожалуйста нажмите кнопку или перейдите по ссылке ниже для подтверждения адреса электронной почты
+${apiLink}${token}`
+          sendEmail.create({
+            title: title,
+            text: text,
+            to_user: user._id,
+          })
           const massage = {
             to: emailLowerCase.trim(),
-            subject: 'Подтвердите адресс электронной почты',
-            text: ` Подтвердите адрес электронной почты
-        
-                Пожалуйста нажмите кнопку или перейдите по ссылке ниже для подтверждения адреса электронной почты
-                ${apiLink}${token}`, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
+            subject: title,
+            text: text, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
             html: `${regEmailHtml(token, apiLink, user.firstname)}`
           }
           mailer(massage)
         }
         User.findByIdAndUpdate(user._id, { telegram_id: chat_id }, opts).orFail(() => new Error('NotFound'))
-        .populate('house')
+          .populate('house')
           .then((user) => {
             res.send({ user });
           })
@@ -420,7 +449,7 @@ module.exports.disconnect = (req, res, next) => {
   console.log(chat_id)
   if (chat_id !== '') {
     User.findByIdAndUpdate(req.user._id, { telegram_id: '' }, opts).orFail(() => new Error('NotFound'))
-      .then((user) => res.status(200).send({ disconnected: true }))
+      .then(() => res.status(200).send({ disconnected: true }))
       .catch((err) => {
         if (err.message === 'NotFound') {
           throw new NotFoundError('Нет пользователя с таким chat id');
