@@ -71,6 +71,7 @@ const CORS_WHITELIST = [
   app.use('/telegram', require('./routes/telegram'));
   app.use('/users', auth, require('./routes/users'));
   app.use('/houses', auth, require('./routes/houses'));
+  app.use('/houses-from-tg/:chat_id', authByChatId , require('./routes/houses'));
   app.use('/appeals', auth, require('./routes/appeals'));
   app.use('/appeals-from-tg/:chat_id', authByChatId, require('./routes/appeals'));
   // app.use('/cards', auth, require('./routes/cards'));
