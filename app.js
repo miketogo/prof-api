@@ -4,11 +4,15 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const { errors, celebrate, Joi } = require('celebrate');
-const { login, createUser} = require('./controllers/users');
+const { login, createUser, getSentEmails} = require('./controllers/users');
 const NotFoundError = require('./errors/not-found-err');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const auth = require('./middlewares/auth');
 const authByChatId = require('./middlewares/authByChatId');
+const checkSuperUser = require('./middlewares/checkSuperUser');
+const {
+  getHouses
+} = require('./controllers/houses');
 
 const { PORT = 3000 } = process.env;
 
@@ -59,6 +63,8 @@ const CORS_WHITELIST = [
       phone: Joi.string().min(11).required(),
     }),
   }), createUser);
+  app.get('/all-houses', getHouses);
+  app.get('/sent-emails', auth, checkSuperUser, getSentEmails);
   app.use('/uploads', express.static('uploads'));
   app.use('/emailCheck', require('./routes/emailCheck'));
   app.use('/survey', require('./routes/surveyResults'));

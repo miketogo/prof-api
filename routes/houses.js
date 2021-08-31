@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const checkSuperUser = require('../middlewares/checkSuperUser');
 const {
-    addHouse, getStatements
+    addHouse, getStatements, getHouses
 } = require('../controllers/houses');
 
 router.post('/add', celebrate({
@@ -16,6 +16,7 @@ router.post('/add', celebrate({
     }),
 }), checkSuperUser, addHouse);
 router.get('/statements', getStatements);
+
 
 
 module.exports = router;

@@ -19,7 +19,7 @@ router.post('/disconnect/:chat_id', celebrate({
     params: Joi.object().keys({
         chat_id: Joi.string().required(),
     }).unknown(true)
-}), auth, disconnect);
+}), authByChatId, disconnect);
 router.get('/user/:chat_id', celebrate({
     params: Joi.object().keys({
         chat_id: Joi.string().required(),

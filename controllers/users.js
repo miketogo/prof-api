@@ -180,7 +180,7 @@ module.exports.updateMeterReadings = (req, res, next) => {
       let date = moment(realDate.toISOString()).tz("Europe/Moscow").format('D.MM.YYYY  HH:mm')
       const { hotWater, coldWater } = req.body;
       if (user.meterReadings.length === 0) {
-        if (Number(date.split('.')[0]) >= 20 && Number(date.split('.')[0]) <= 31) {
+        if (Number(date.split('.')[0]) >= 1 && Number(date.split('.')[0]) <= 31) {
           let meterReadings = {
             time: date,
             hotWaterSupply: hotWater,
@@ -189,7 +189,27 @@ module.exports.updateMeterReadings = (req, res, next) => {
           User.findByIdAndUpdate(req.user._id, {
             meterReadings: meterReadings,
           }, opts).orFail(() => new Error('NotFound'))
-            .then((user) => res.status(200).send({ user }))
+            .then((user) => {
+              res.status(200).send({ user })
+              const title = 'Показания счётчиков приняты'
+              const text = `Вы отправили показания счётчиков,
+
+Посмотреть историю показаний можно в разделе "Мои счётчики".
+Если Вы допустили ошибку при отправке, отправьте жалобу в разделе "Мои жалобы" с объяснением произошедшего`
+              sendEmail.create({
+                title: title,
+                text: text,
+                date,
+                to_user: user._id,
+              })
+              const massage = {
+                to: user.email,
+                subject: title,
+                text: text,
+                html: `${meterReadingsEmailHtml(title, hotWater, coldWater, date)}`
+              }
+              mailer(massage)
+            })
             .catch((err) => {
               if (err.message === 'NotFound') {
                 throw new NotFoundError('Нет пользователя с таким id');
@@ -204,7 +224,7 @@ module.exports.updateMeterReadings = (req, res, next) => {
         }
 
       } else {
-        if (Number(date.split('.')[0]) >= 20 && Number(date.split('.')[0]) <= 31) {
+        if (Number(date.split('.')[0]) >= 1 && Number(date.split('.')[0]) <= 31) {
           if (Number(user.meterReadings[user.meterReadings.length - 1].time.split('.')[1]) !== Number(date.split('.')[1])) {
             if (Number(user.meterReadings[user.meterReadings.length - 1].hotWaterSupply) <= hotWater && Number(user.meterReadings[user.meterReadings.length - 1].coldWaterSupply) <= coldWater) {
               let meterReadings = {

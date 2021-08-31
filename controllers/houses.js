@@ -56,3 +56,18 @@ module.exports.getStatements = (req, res, next) => {
         .catch(next)
 };
 
+module.exports.getHouses = (req, res, next) => {
+    House.find({})
+    .orFail(() => new Error('NotFound'))
+        .then((houses) => {
+            res.status(200).send({ houses })
+        })
+        .catch((err) => {
+            if (err.message === 'NotFound') {
+                throw new NotFoundError('Нет пользователя с таким id');
+            }
+        })
+        .catch(next)
+};
+
+
