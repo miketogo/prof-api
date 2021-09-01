@@ -64,8 +64,6 @@ module.exports.createUser = (req, res, next) => {
       let emailLowerCase = email.toLowerCase();
       const realDate = new Date
       let date = moment(realDate.toISOString()).tz("Europe/Moscow").format('D.MM.YYYY  HH:mm')
-      console.log(names, emailLowerCase, house, house._id)
-
       bcrypt.hash(password, 10)
         .then((hash) => User.create({
           fullname: fullname.trim(),
@@ -101,7 +99,7 @@ ${apiLink}${token}`
                 to_user: user._id,
               })
               const massage = {
-                to: emailLowerCase.trim(),
+                to: user.email,
                 subject: title,
                 text: text,
                 html: `${regEmailHtml(token, apiLink, user.firstname)}`

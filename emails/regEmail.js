@@ -181,7 +181,7 @@ a[x-apple-data-detectors='true'] {
         
   <div style="line-height: 140%; text-align: center; padding: 0px 0px 150px 0; word-wrap: break-word;">
     <p style="font-size: 14px; line-height: 140%;">${link+token}/</p>
-    <p style="font-size: 12px; line-height: 140%; margin-top:40px;">Подтверждая электронный адрес, вы соглашаетесь получать информационные письма о статусе ваших запросов, а также получать напоминания о передаче показаний счетчиков/</p>
+    <p style="font-size: 12px; line-height: 140%; margin-top:40px;">Подтверждая электронный адрес, вы соглашаетесь получать информационные письма о статусе ваших запросов, а также получать напоминания о передаче показаний счетчиков</p>
   </div>
 
       </td>
