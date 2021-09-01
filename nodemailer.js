@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer')
-
+require('dotenv').config();
+const emailPass = process.env.MAIL_PASS;
 const transporter = nodemailer.createTransport(
     {
         host: 'smtp.mail.ru',
@@ -7,7 +8,7 @@ const transporter = nodemailer.createTransport(
         secure: true,
         auth: {
             user: 'no-reply.prof-uk@mail.ru',
-            pass: 'EiP$rs3iiEO8'
+            pass: emailPass,
         }
     },
     {
@@ -23,4 +24,4 @@ const mailer = message => {
     })
 }
 
-module.exports = mailer
+module.exports = mailer 

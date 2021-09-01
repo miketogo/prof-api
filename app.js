@@ -13,7 +13,8 @@ const checkSuperUser = require('./middlewares/checkSuperUser');
 const {
   getHouses
 } = require('./controllers/houses');
-
+require('dotenv').config();
+console.log(process.env.NODE_ENV);
 const { PORT = 3000 } = process.env;
 
 const CORS_WHITELIST = [
