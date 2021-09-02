@@ -22,7 +22,6 @@ const CORS_WHITELIST = [
   'https://localhost:3000',
   'http://surikov.mesto.students.nomoredomains.monster',
   'https://surikov.mesto.students.nomoredomains.monster',
-    '*',
   ];
   const app = express();
   app.use(helmet());
