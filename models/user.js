@@ -86,6 +86,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    regEmailAgainSentDate: {
+        type: String,
+    },
     house: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'house',

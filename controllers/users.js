@@ -12,11 +12,10 @@ const regEmailHtml = require('../emails/regEmail')
 const meterReadingsEmailHtml = require('../emails/meterReadingsEmail')
 const sendEmail = require('../models/sendEmail');
 
-const { NODE_ENV, JWT_SECRET } = process.env;
-
 const apiLink = 'http://renat-hamatov.ru/emailCheck/'
 
-const jwtSecretPhrase = NODE_ENV !== 'production' ? 'e20f5a33bee3a1991d9da7e4db38281f9e97b36e0b1293af2c58035fbe34075f' : JWT_SECRET;
+const jwtSecretPhrase = process.env.JWT_SECRET;
+const jwtEmailSecretPhrase = process.env.JWT_EMAIL_SECRET;
 const opts = {
   new: true,
   runValidators: true,
@@ -82,6 +81,7 @@ module.exports.createUser = (req, res, next) => {
           return User.findUserByCredentials(emailLowerCase, password)
             .then((user) => {
               const token = jwt.sign({ _id: user._id }, jwtSecretPhrase, { expiresIn: '7d' });
+              const emailToken = jwt.sign({ _id: user._id }, jwtEmailSecretPhrase, { expiresIn: '7d' });
               res.cookie('jwt', token, {
                 maxAge: 3600000 * 24 * 7,
                 httpOnly: true,
@@ -91,7 +91,7 @@ module.exports.createUser = (req, res, next) => {
               const text = `Подтвердите адрес электронной почты
             
 Пожалуйста нажмите кнопку или перейдите по ссылке ниже для подтверждения адреса электронной почты
-${apiLink}${token}`
+${apiLink}${emailToken}`
               sendEmail.create({
                 title: title,
                 text: text,
@@ -102,7 +102,7 @@ ${apiLink}${token}`
                 to: user.email,
                 subject: title,
                 text: text,
-                html: `${regEmailHtml(token, apiLink, user.firstname)}`
+                html: `${regEmailHtml(emailToken, apiLink, user.firstname)}`
               }
               mailer(massage)
               res.send({ token });

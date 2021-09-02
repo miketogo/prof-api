@@ -44,7 +44,7 @@ async function sendNotification(user, date) {
         console.log(date)
         console.log(user.email)
         const title = 'Передача показаний счётчиков ГВС и ХВС'
-        const text = `${user.firstname}, напоминаем что с 20 по 25 число включительно можно передать показания счетчиков онлайн.
+        const text = `${user.firstname}, напоминаем что с 20 по 25 числа включительно можно передать показания счетчиков онлайн.
             
 Для этого прейдите в раздел "Мои счётчики" и внесите новые показания`
         sendEmail.create({
@@ -57,7 +57,7 @@ async function sendNotification(user, date) {
           to: user.email,
           subject: title,
           text: text,
-          html: `${meterReadingsNotifiEmailHtml(`C 20 по 25 число включительно можно передать показания счетчиков онлайн`, `${user.firstname}, в данный период вы можете передать новые показания в соответствуеющем разделе`)}`
+          html: `${meterReadingsNotifiEmailHtml(`C 20 по 25 числа включительно можно передать показания счетчиков онлайн`, `${user.firstname}, в данный период вы можете передать новые показания в соответствуеющем разделе`)}`
         }
         mailer(massage)
         if (user.telegram_id !== '') {
