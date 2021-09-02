@@ -32,11 +32,11 @@ const CORS_WHITELIST = [
     allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
     credentials: true,
     origin: [
-      'http://localhost:3000',
-      'https://localhost:3000',
-      'http://surikov.mesto.students.nomoredomains.monster',
-      'https://surikov.mesto.students.nomoredomains.monster',
-      'http://192.168.0.215:3000',
+      'http://localhost:3000/',
+      'https://localhost:3000/',
+      'http://surikov.mesto.students.nomoredomains.monster/',
+      'https://surikov.mesto.students.nomoredomains.monster/',
+      'http://192.168.0.215:3000/',
       'https://192.168.0.215:3000/'
       ],
   };
