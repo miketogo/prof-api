@@ -31,13 +31,12 @@ const CORS_WHITELIST = [
     optionsSuccessStatus: 204,
     allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
     credentials: true,
-    origin: function checkCorsList(origin, callback) {
-      if (CORS_WHITELIST.indexOf(origin) !== -1 || !origin) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
+    origin: [
+      'http://localhost:3000',
+      'https://localhost:3000',
+      'http://surikov.mesto.students.nomoredomains.monster',
+      'https://surikov.mesto.students.nomoredomains.monster',
+      ],
   };
   app.use('*', cors(corsOption));
   app.use(cookieParser());
