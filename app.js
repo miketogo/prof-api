@@ -31,12 +31,7 @@ const CORS_WHITELIST = [
     optionsSuccessStatus: 204,
     allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
     credentials: true,
-    origin: [
-      'http://localhost:3000',
-      'https://localhost:3000',
-      'http://surikov.mesto.students.nomoredomains.monster',
-      'https://surikov.mesto.students.nomoredomains.monster',
-      ],
+    origin: '*',
   };
   app.use('*', cors(corsOption));
   app.use(cookieParser());
