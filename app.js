@@ -15,11 +15,13 @@ const {
 } = require('./controllers/houses');
 require('dotenv').config();
 console.log(process.env.NODE_ENV);
-const { PORT = 3003 } = process.env; //PORT
+const { PORT = 3000 } = process.env; //PORT
 
 const CORS_WHITELIST = [
   'http://localhost:3000',
   'https://localhost:3000',
+  'http://surikov.mesto.students.nomoredomains.monster',
+  'https://surikov.mesto.students.nomoredomains.monster',
     '*',
   ];
   const app = express();
