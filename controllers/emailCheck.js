@@ -117,7 +117,7 @@ module.exports.verifyEmail = (req, res, next) => {
       //   console.log(error.code);  // => 'ETELEGRAM'
       //   console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
       // });
-      res.redirect("https://vk.com/surbek")
+      res.redirect("http://surikov.mesto.students.nomoredomains.monster")
     })    //!! СДЕЛАТЬ ПЕРЕАДРЕАЦИЮ
     .catch((err) => {
       if (err.message === 'NotFound') {
