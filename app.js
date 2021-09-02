@@ -32,12 +32,18 @@ const CORS_WHITELIST = [
     allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
     credentials: true,
     origin: [
-      'http://localhost:3000/',
-      'https://localhost:3000/',
-      'http://surikov.mesto.students.nomoredomains.monster/',
-      'https://surikov.mesto.students.nomoredomains.monster/',
-      'http://192.168.0.215:3000/',
-      'https://192.168.0.215:3000/'
+      'http://localhost:3000',
+      'https://localhost:3000',
+      'http://surikov.mesto.students.nomoredomains.monster',
+      'https://surikov.mesto.students.nomoredomains.monster',
+      'http://192.168.0.215:3000',
+      'https://192.168.0.215:3000',
+      'http://www.localhost:3000',
+      'https://www.localhost:3000',
+      'http://www.surikov.mesto.students.nomoredomains.monster',
+      'https://www.surikov.mesto.students.nomoredomains.monster',
+      'http://www.192.168.0.215:3000',
+      'https://www.192.168.0.215:3000'
       ],
   };
   app.use('*', cors(corsOption));
