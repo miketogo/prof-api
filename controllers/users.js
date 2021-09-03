@@ -12,7 +12,7 @@ const regEmailHtml = require('../emails/regEmail')
 const meterReadingsEmailHtml = require('../emails/meterReadingsEmail')
 const sendEmail = require('../models/sendEmail');
 
-const apiLink = 'http://renat-hamatov.ru/emailCheck/'
+const apiLink = 'https://api-prof.ru/emailCheck/'
 
 const jwtSecretPhrase = process.env.JWT_SECRET;
 const jwtEmailSecretPhrase = process.env.JWT_EMAIL_SECRET;
@@ -237,7 +237,7 @@ module.exports.updateMeterReadings = (req, res, next) => {
         }
 
       } else {
-        if (Number(date.split('.')[0]) >= 1 && Number(date.split('.')[0]) <= 31) {
+        if (Number(date.split('.')[0]) >= 20 && Number(date.split('.')[0]) <= 25) {
           if (Number(user.meterReadings[user.meterReadings.length - 1].time.split('.')[1]) !== Number(date.split('.')[1])) {
             if (Number(user.meterReadings[user.meterReadings.length - 1].hotWaterSupply) <= hotWater && Number(user.meterReadings[user.meterReadings.length - 1].coldWaterSupply) <= coldWater) {
               let meterReadings = {

@@ -21,7 +21,7 @@ const sendEmail = require('../models/sendEmail');
 
 
 const jwtEmailSecretPhrase = process.env.JWT_EMAIL_SECRET;
-const apiLink = 'http://renat-hamatov.ru/emailCheck/'
+const apiLink = 'https://api-prof.ru/emailCheck/'
 const opts = {
   new: true,
   runValidators: true,
@@ -117,7 +117,7 @@ module.exports.verifyEmail = (req, res, next) => {
       //   console.log(error.code);  // => 'ETELEGRAM'
       //   console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
       // });
-      res.redirect("http://surikov.mesto.students.nomoredomains.monster")
+      res.redirect("https://prof-uk.ru/")
     })    //!! СДЕЛАТЬ ПЕРЕАДРЕАЦИЮ
     .catch((err) => {
       if (err.message === 'NotFound') {
