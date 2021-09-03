@@ -139,11 +139,23 @@ ${apiLink}${emailToken}`
 };
 
 module.exports.getUserById = (req, res, next) => {
-  User.findById(req.params.userId === 'me'
-    ? req.user._id
-    : req.params.userId).orFail(() => new Error('NotFound'))
+  User.findById(req.user._id).orFail(() => new Error('NotFound'))
     .populate('house')
     .then((user) => res.status(200).send({ user }))
+    .catch((err) => {
+      if (err.message === 'NotFound') {
+        throw new NotFoundError('Нет пользователя с таким id');
+      }
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        throw new InvalidDataError('Переданы некорректные данные при поиске пользователя по id');
+      }
+    })
+    .catch(next);
+};
+
+module.exports.getUserIsAdmin = (req, res, next) => {
+  User.findById(req.user._id).orFail(() => new Error('NotFound'))
+    .then(() => res.status(200).send({ admin: true }))
     .catch((err) => {
       if (err.message === 'NotFound') {
         throw new NotFoundError('Нет пользователя с таким id');
@@ -174,11 +186,14 @@ module.exports.getUserByChatId = (req, res, next) => {
 module.exports.updateMeterReadings = (req, res, next) => {
   User.findById(req.user._id).orFail(() => new Error('NotFound'))
     .then((user) => {
+      if (!user.emailVerified) {
+        throw new Error('EmailNotVerified')
+      }
       const realDate = new Date
       let date = moment(realDate.toISOString()).tz("Europe/Moscow").format('D.MM.YYYY  HH:mm')
       const { hotWater, coldWater } = req.body;
       if (user.meterReadings.length === 0) {
-        if (Number(date.split('.')[0]) >= 1 && Number(date.split('.')[0]) <= 31) {
+        if (Number(date.split('.')[0]) >= 20 && Number(date.split('.')[0]) <= 25) {
           let meterReadings = {
             time: date,
             hotWaterSupply: hotWater,
@@ -293,6 +308,9 @@ module.exports.updateMeterReadings = (req, res, next) => {
       if (err.message === 'NotRightDate') {
         throw new AuthError('Подать показания счетчиков можно только в 20-25 числа каждого месяца');
       }
+      if (err.message === 'EmailNotVerified') {
+        throw new AuthError('Для доступа в этот раздел необходимо подтвердить email');
+      }
     })
     .catch(next);
 
@@ -301,6 +319,9 @@ module.exports.updateMeterReadings = (req, res, next) => {
 module.exports.updateUserProfile = (req, res, next) => {
   User.findById(req.user._id).orFail(() => new Error('NotFound'))
     .then((user) => {
+      if (!user.emailVerified) {
+        throw new Error('EmailNotVerified')
+      }
       const realDate = new Date
       let date = moment(realDate.toISOString()).tz("Europe/Moscow").format('D.MM.YYYY  HH:mm')
       const { fullname = user.fullname, flat = user.flat, email = user.email, phone = user.phone } = req.body;
@@ -531,6 +552,15 @@ ${apiLink}${token}`
           }).catch(next);
       }
     })
+    .catch((err)=>{
+      if (err.message === 'NotFound') {
+        throw new NotFoundError('Нет пользователя с таким id');
+      }
+      if (err.message === 'EmailNotVerified') {
+        throw new AuthError('Для доступа в этот раздел необходимо подтвердить email');
+      }
+    })
+    .catch(next)
 }
 
 module.exports.connect = (req, res, next) => {
@@ -546,7 +576,7 @@ module.exports.connect = (req, res, next) => {
 
       else {
         if (!user.emailVerified) {
-          const token = jwt.sign({ _id: user._id }, jwtSecretPhrase, { expiresIn: '7d' });
+          const token = jwt.sign({ _id: user._id }, jwtEmailSecretPhrase, { expiresIn: '7d' });
           res.cookie('jwt', token, {
             maxAge: 3600000 * 24 * 7,
             httpOnly: true,

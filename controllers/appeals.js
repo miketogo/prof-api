@@ -15,6 +15,8 @@ const appealCreateEmailHtml = require('../emails/appelCreateEmail')
 const appealCreateEmailWithImgHtml = require('../emails/appealCreateEmailWithImg')
 const appelChangeStatusEmailHtml = require('../emails/appelChangeStatusEmail')
 const appelRejectEmailHtml = require('../emails/appelRejectEmail');
+const appelStatmentOrderEmailHtml = require('../emails/appelStatmentOrderEmail');
+const appelStatmentRejectEmailHtml = require('../emails/appelStatmentRejectEmail');
 const sendEmail = require('../models/sendEmail');
 
 
@@ -130,14 +132,7 @@ module.exports.changeStatus = (req, res, next) => {
         status, appeal_id, rejectReason = 'Не указано',
     } = req.body;
     if (status === 'in_work' || status === 'done' || status === 'waiting') {
-        let statusText
-        if (status === 'waiting') {
-            statusText = 'В ожидании'
-        } else if (status === 'in_work') {
-            statusText = 'В работе'
-        } else if (status === 'done') {
-            statusText = 'Выполнено'
-        }
+
         const realDate = new Date
         let date = moment(realDate.toISOString()).tz("Europe/Moscow").format('D.MM.YYYY  HH:mm')
         console.log(date)
@@ -153,31 +148,75 @@ module.exports.changeStatus = (req, res, next) => {
                 let newAdminsChangedStatus = appeal.adminsChangedStatus
                 newAdminsChangedStatus.push(adminsChangedStatus)
                 console.log(newAdminsChangedStatus)
+
+
                 Appeal.findByIdAndUpdate(appeal_id, {
                     status: status,
                     adminsChangedStatus: newAdminsChangedStatus,
                 }, opts).orFail(() => new Error('NotFound'))
                     .populate(['adminsChangedStatus.admin_id', 'owner'])
                     .then((appeal) => {
-                        const date = moment(realDate.toISOString()).tz("Europe/Moscow").format('D.MM.YYYY  HH:mm')
-                        const title = 'Статус вашего обращения изменен'
-                        const text = `Статус вашего обращения изменен на: ${statusText}
+                        let date = moment(realDate.toISOString()).tz("Europe/Moscow").format('D.MM.YYYY  HH:mm')
+
+                        if (appeal.type === 'complaint') {
+                            let statusText
+                            if (status === 'waiting') {
+                                statusText = 'В ожидании'
+                            } else if (status === 'in_work') {
+                                statusText = 'В работе'
+                            } else if (status === 'done') {
+                                statusText = 'Выполнено'
+                            }
+                            let title = 'Статус вашего обращения изменен'
+                            let text = `Статус вашего обращения изменен на: ${statusText}
                             
 Отслеживать статус обращения можно в разделе Мои обращения.
 При изменении статуса Вам будет отправлено письмо.`
-                        sendEmail.create({
-                            title: title,
-                            text: text,
-                            to_user: appeal.owner._id,
-                            date
-                        })
-                        const massage = {
-                            to: appeal.owner.email,
-                            subject: title,
-                            text: text, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
-                            html: `${appelChangeStatusEmailHtml(`Статус вашего обращения изменен на: ${statusText}`, statusText, date, appeal.text)}`
+                            const massage = {
+                                to: appeal.owner.email,
+                                subject: title,
+                                text: text, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
+                                html: `${appelChangeStatusEmailHtml(`Статус вашего обращения изменен на: ${statusText}`, statusText, date, appeal.text)}`
+                            }
+                            sendEmail.create({
+                                title: title,
+                                text: text,
+                                to_user: appeal.owner._id,
+                                date
+                            })
+
+                            mailer(massage)
+                        } else if (appeal.type === 'statement') {
+                            let statusText
+                            if (appeal.status === 'waiting') {
+                                statusText = 'В ожидании'
+                            } else if (appeal.status === 'in_work') {
+                                statusText = 'В работе'
+                            } else if (appeal.status === 'done') {
+                                statusText = 'Доставлено до почтового ящика ✅'
+                            }
+                            let title = 'Изменился статус вашей справки'
+                            let text = `Отслеживать статус изготовления справки можно в разделе Мои Справки.
+                            
+При изменении статуса Вам будет отправлено письмо.`
+                            const massage = {
+                                to: appeal.owner.email,
+                                subject: title,
+                                text: text, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
+                                html: `${appelStatmentOrderEmailHtml('Изменился статус вашей справки', statusText, date, appeal.text.substring(15))}`
+                            }
+                            sendEmail.create({
+                                title: title,
+                                text: text,
+                                to_user: appeal.owner._id,
+                                date
+                            })
+
+                            mailer(massage)
                         }
-                        mailer(massage)
+
+
+
                         res.status(200).send({ appeal })
                     })
                     .catch((err) => {
@@ -227,26 +266,51 @@ module.exports.changeStatus = (req, res, next) => {
                     .populate(['adminsChangedStatus.admin_id', 'owner'])
                     .then((appeal) => {
                         const date = moment(realDate.toISOString()).tz("Europe/Moscow").format('D.MM.YYYY  HH:mm')
-                        const title = 'Ваше обращение было отклонено'
-                        const text = `Статус Вашего обращения изменен на: ${statusText}
-
-Причина: ${rejectReason.trim()}
-
-Отслеживать статус обращения можно в разделе Мои обращения.
-При изменении статуса Вам будет отправлено письмо.`
-                        sendEmail.create({
-                            title: title,
-                            text: text,
-                            date,
-                            to_user: appeal.owner._id,
-                        })
-                        const massage = {
-                            to: appeal.owner.email,
-                            subject: title,
-                            text: text, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
-                            html: `${appelRejectEmailHtml(`Статус вашего обращения изменен на: ${statusText}`, rejectReason.trim(), statusText, date, appeal.text)}`
+                        if (appeal.type === 'complaint') {
+                            const title = 'Ваше обращение было отклонено'
+                            const text = `Статус Вашего обращения изменен на: ${statusText}
+    
+    Причина: ${rejectReason.trim()}
+    
+    Отслеживать статус обращения можно в разделе Мои обращения.
+    При изменении статуса Вам будет отправлено письмо.`
+                            sendEmail.create({
+                                title: title,
+                                text: text,
+                                date,
+                                to_user: appeal.owner._id,
+                            })
+                            const massage = {
+                                to: appeal.owner.email,
+                                subject: title,
+                                text: text, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
+                                html: `${appelRejectEmailHtml(`Статус вашего обращения изменен на: ${statusText}`, rejectReason.trim(), statusText, date, appeal.text)}`
+                            }
+                            mailer(massage)
+                        } else if (appeal.type === 'statement') {
+                            const title = 'Запрос на изготовление справки был отклонен'
+                            const text = `Статус изготовления справки изменен на: ${statusText}
+    
+    Причина: ${rejectReason.trim()}
+    
+    Отслеживать статус изготовление справки можно в разделе Мои Справки.
+    При изменении статуса Вам будет отправлено письмо.`
+                            sendEmail.create({
+                                title: title,
+                                text: text,
+                                date,
+                                to_user: appeal.owner._id,
+                            })
+                            const massage = {
+                                to: appeal.owner.email,
+                                subject: title,
+                                text: text, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
+                                html: `${appelStatmentRejectEmailHtml(`Статус изготовления справки изменен на: ${statusText}`, rejectReason.trim(), statusText, date, appeal.text.substring(15))}`
+                            }
+                            mailer(massage)
                         }
-                        mailer(massage)
+
+
                         res.status(200).send({ appeal })
                     })
                     .catch((err) => {
@@ -379,7 +443,7 @@ module.exports.createAppealStatement = (req, res, next) => {
     User.findById(req.user._id).orFail(() => new Error('NotFound'))
         .populate('house')
         .then((user) => {
-            
+
             if (user.emailVerified) {
                 let howReceived
                 if (!req.chat_id) {
@@ -390,9 +454,9 @@ module.exports.createAppealStatement = (req, res, next) => {
                 const statementData = user.house.statements.filter(function (item) {
                     return item.value.trim() === value.trim()
                 });
-                
+
                 if (statementData.length === 0) {
-                    
+
                     throw new Error('StatementNotFound');
                 } else {
                     const realDate = new Date
@@ -412,15 +476,15 @@ module.exports.createAppealStatement = (req, res, next) => {
                             } else if (appeal.status === 'in_work') {
                                 status = 'В работе'
                             } else if (appeal.status === 'done') {
-                                status = 'Выполнено'
+                                status = 'Доставлено до почтового ящика ✅'
                             } else if (appeal.status === 'rejected') {
                                 status = 'Отклонено'
                             }
 
-                            const title = 'Ваше обращение принято в обработку'
-                            const text = `Отслеживать статус обращения можно в разделе Мои обращения.
+                            const title = 'Заказ справки оформлен'
+                            const text = `Отслеживать статус изготовления справки можно в разделе Мои Справки.
                             
-    При изменении статуса Вам будет отправлено письмо.`
+При изменении статуса Вам будет отправлено письмо.`
                             sendEmail.create({
                                 date,
                                 title: title,
@@ -432,7 +496,7 @@ module.exports.createAppealStatement = (req, res, next) => {
                                 to: user.email,
                                 subject: title,
                                 text: text, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
-                                html: `${appealCreateEmailHtml('Ваше обращение принято в обработку', status, date, appeal.text)}`
+                                html: `${appelStatmentOrderEmailHtml('Заказ справки оформлен', status, date, statementData[0].name.trim())}`
                             }
                             mailer(massage)
 

@@ -2,16 +2,14 @@ const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const checkSuperUser = require('../middlewares/checkSuperUser');
 const {
-  getUsers, getUserById, updateUserProfile, updateMeterReadings, getSentEmails
+  getUsers, getUserById, updateUserProfile, updateMeterReadings, getSentEmails, getUserIsAdmin
 } = require('../controllers/users');
 
 router.get('/', checkSuperUser, getUsers);
-router.get('/:userId', celebrate({
-  // валидируем параметры
-  params: Joi.object().keys({
-    userId: Joi.string(),
-  }),
-}), getUserById);
+router.get('/sent-emails', checkSuperUser, getSentEmails);
+router.get('/is-administrator', checkSuperUser, getUserIsAdmin);
+
+router.get('/me', getUserById);
 router.patch('/me', celebrate({
   body: Joi.object().keys({
     fullname: Joi.string().min(2).required(),
@@ -26,7 +24,7 @@ router.post('/meter-update', celebrate({
     coldWater: Joi.number().min(0).required(),
   }),
 }), updateMeterReadings);
-router.get('/sent-emails', checkSuperUser, getSentEmails);
+
 
 
 module.exports = router;

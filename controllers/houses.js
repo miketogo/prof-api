@@ -46,9 +46,15 @@ module.exports.getStatements = (req, res, next) => {
     User.findById(req.user._id).orFail(() => new Error('NotFound'))
         .populate('house')
         .then((user) => {
+            if (!user.emailVerified) {
+                throw new Error('EmailNotVerified')
+            }
             res.status(200).send({ statements: user.house.statements })
         })
         .catch((err) => {
+            if (err.message === 'EmailNotVerified') {
+                throw new AuthError('Для доступа в этот раздел необходимо подтвердить email');
+            }
             if (err.message === 'NotFound') {
                 throw new NotFoundError('Нет пользователя с таким id');
             }
@@ -58,7 +64,7 @@ module.exports.getStatements = (req, res, next) => {
 
 module.exports.getHouses = (req, res, next) => {
     House.find({})
-    .orFail(() => new Error('NotFound'))
+        .orFail(() => new Error('NotFound'))
         .then((houses) => {
             res.status(200).send({ houses })
         })
