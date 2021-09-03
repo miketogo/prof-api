@@ -12,7 +12,7 @@ fetch('_BASE_URL/all-houses', {
     }).then(this._checkResponse)
 ```
 Returns all created houses
-```json
+```sh
 {
 "houses": [
             { 
