@@ -34,14 +34,14 @@ const CORS_WHITELIST = [
     origin: [
       'http://localhost:3000',
       'https://localhost:3000',
-      'https://prof-uk.ru/',
-      'http://prof-uk.ru/',
+      'https://prof-uk.ru',
+      'http://prof-uk.ru',
       'http://192.168.0.215:3000',
       'https://192.168.0.215:3000',
       'http://www.localhost:3000',
       'https://www.localhost:3000',
-      'https://www.prof-uk.ru/',
-      'http://www.prof-uk.ru/',
+      'https://www.prof-uk.ru',
+      'http://www.prof-uk.ru',
       'http://www.192.168.0.215:3000',
       'https://www.192.168.0.215:3000'
       ],
