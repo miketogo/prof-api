@@ -7,22 +7,22 @@ const userSchema = new mongoose.Schema({
     fullname: {
         type: String,
         required: true,
-        minlength: 2
+        minlength: 1
     },
     lastname: {
         type: String,
         required: true,
-        minlength: 2
+        minlength: 1
     },
     firstname: {
         type: String,
         required: true,
-        minlength: 2
+        minlength: 1
     },
     patronymic: {
         type: String,
         required: true,
-        minlength: 2
+        minlength: 1
     },
     flat: {
         type: Number,
