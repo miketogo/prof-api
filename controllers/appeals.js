@@ -91,7 +91,8 @@ module.exports.uploadImage = (req, res, next) => {
             error = 'Можно загружать только картинки(png, jpg, jpeg)';
         }
         if (err) {
-            res.status(400).send({ error: err })
+            console.log(err)
+            res.status(err.code).send({ error: err.message })
         } else {
             req.text = formData.text
             if (fileExt === '.heic') {
