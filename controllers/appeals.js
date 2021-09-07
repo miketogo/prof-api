@@ -44,7 +44,7 @@ module.exports.uploadImage = (req, res, next) => {
     const storage = multer.diskStorage({
         destination: (req, file, cb) => {
             const ext = path.extname(file.originalname);
-            if (ext === '.heic') {
+            if (ext.toLowerCase() === '.heic') {
                 cb(null, 'uploads/heic')
             } else {
                 cb(null, 'uploads')
