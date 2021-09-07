@@ -181,7 +181,7 @@ a[x-apple-data-detectors='true'] {
         
   <div style="line-height: 140%; text-align: center; padding: 0px 0px 150px 0; word-wrap: break-word;">
     <p style="font-size: 14px; line-height: 140%; font-family:arial,helvetica,sans-serif;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #FFFFFF;">${link+token}/</p>
-    <p style="font-size: 12px; line-height: 140%; font-family:arial,helvetica,sans-serif;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #8B8B8B; margin-top:40px;">Подтверждая электронный адрес, вы соглашаетесь на обработку персональных данных, а так же получать информационные письма о статусе ваших запросов, а также получать напоминания о передаче показаний счетчиков. Пожалуйста, проигнорируйте данное письмо, если оно попало к Вам по ошибке.</p>
+    <p style="font-size: 12px; line-height: 140%; font-family:arial,helvetica,sans-serif;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #8B8B8B; margin-top:40px;">Подтверждая электронный адрес, вы соглашаетесь на обработку персональных данных, получение информационных писем о статусе ваших запросов, а также на получение напоминаний о передаче показаний счетчиков. Пожалуйста, проигнорируйте данное письмо, если оно попало к Вам по ошибке.</p>
   </div>
 
       </td>
