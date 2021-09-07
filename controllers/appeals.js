@@ -72,7 +72,7 @@ module.exports.uploadImage = (req, res, next) => {
         limits: { fileSize: 10 * 1024 * 1024 },
         fileFilter: (req, file, cb) => {
             const ext = path.extname(file.originalname);
-            if (ext !== '.jpg' && ext !== '.jpeg' && ext !== '.png' && ext !== '.heic') {
+            if (ext.toLowerCase() !== '.jpg' && ext.toLowerCase() !== '.jpeg' && ext.toLowerCase() !== '.png' && ext.toLowerCase() !== '.heic') {
                 const err = new Error('ExtentionError')
                 return cb(err)
             }
