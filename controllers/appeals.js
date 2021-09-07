@@ -69,7 +69,7 @@ module.exports.uploadImage = (req, res, next) => {
 
     const upload = multer({
         storage,
-        limits: { fileSize: 3 * 1024 * 1024 },
+        limits: { fileSize: 10 * 1024 * 1024 },
         fileFilter: (req, file, cb) => {
             const ext = path.extname(file.originalname);
             if (ext !== '.jpg' && ext !== '.jpeg' && ext !== '.png' && ext !== '.heic') {
