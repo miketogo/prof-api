@@ -193,7 +193,7 @@ module.exports.updateMeterReadings = (req, res, next) => {
       let date = moment(realDate.toISOString()).tz("Europe/Moscow").format('D.MM.YYYY  HH:mm')
       const { hotWater, coldWater } = req.body;
       if (user.meterReadings.length === 0) {
-        if (Number(date.split('.')[0]) >= 1 && Number(date.split('.')[0]) <= 25) {
+        if (Number(date.split('.')[0]) >= 20 && Number(date.split('.')[0]) <= 25) {
           let meterReadings = {
             time: date,
             hotWaterSupply: hotWater,
@@ -237,7 +237,7 @@ module.exports.updateMeterReadings = (req, res, next) => {
         }
 
       } else {
-        if (Number(date.split('.')[0]) >= 1 && Number(date.split('.')[0]) <= 25) {
+        if (Number(date.split('.')[0]) >= 20 && Number(date.split('.')[0]) <= 25) {
           if (Number(user.meterReadings[user.meterReadings.length - 1].time.split('.')[1]) !== Number(date.split('.')[1])) {
             if (Number(user.meterReadings[user.meterReadings.length - 1].hotWaterSupply) <= hotWater && Number(user.meterReadings[user.meterReadings.length - 1].coldWaterSupply) <= coldWater) {
               let meterReadings = {
