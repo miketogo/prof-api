@@ -124,8 +124,12 @@ module.exports.uploadImage = (req, res, next) => {
 
 module.exports.getAppeals = (req, res, next) => {
     Appeal.find({})
-        .populate('owner')
-        .populate('house')
+        .populate({
+            path: 'owner',
+            populate: {
+                path: 'house'
+            }
+        })
         .then((appeals) => res.status(200).send({ appeals }))
         .catch(next);
 };
