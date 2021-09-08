@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport(
         }
     },
     {
-        from: 'Профессионал УК <no-reply.prof-uk@mail.ru>',
+        from: 'Профессионал УК <no-reply@prof-uk.ru>',
     }
 
 )
