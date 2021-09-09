@@ -129,7 +129,16 @@ module.exports.getAppeals = (req, res, next) => {
             populate: {
                 path: 'house'
             }
-        })
+
+        },
+            {
+                path: 'adminsChangedStatus',
+                populate: {
+                    path: 'admin_id'
+                }
+
+            }
+        )
         .then((appeals) => res.status(200).send({ appeals }))
         .catch(next);
 };
