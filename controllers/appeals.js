@@ -44,7 +44,7 @@ module.exports.uploadImage = (req, res, next) => {
     const storage = multer.diskStorage({
         destination: (req, file, cb) => {
             const ext = path.extname(file.originalname);
-            if (ext.toLowerCase() === '.heic') {
+            if (ext.toLowerCase() === '.heic' || ext === '.HEIC') {
                 cb(null, 'uploads/heic')
             } else {
                 cb(null, 'uploads')
@@ -54,7 +54,7 @@ module.exports.uploadImage = (req, res, next) => {
             fileName = `${req.user._id}_${Date.now()}`
             fileExt = `${path.extname(file.originalname)}`
             fileNameWithExt = `${fileName}${path.extname(file.originalname)}`
-            if (fileExt === '.heic') {
+            if (fileExt === '.heic' || fileExt === '.HEIC') {
                 HeicToChange.create({ name: fileName })
                     .then(cb(null, fileNameWithExt))
                     .catch(next)
@@ -96,7 +96,7 @@ module.exports.uploadImage = (req, res, next) => {
             res.status(err.code).send({ error: err.message })
         } else {
             req.text = formData.text
-            if (fileExt === '.heic') {
+            if (fileExt === '.heic' || fileExt === '.HEIC') {
                 req.imageLink = `/uploads/${fileName}.jpg`
                 setTimeout(next, 7000);
             } else {
