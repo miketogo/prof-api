@@ -54,6 +54,7 @@ module.exports.uploadImage = (req, res, next) => {
             fileName = `${req.user._id}_${Date.now()}`
             fileExt = `${path.extname(file.originalname).toLowerCase()}`
             fileNameWithExt = `${fileName}${path.extname(file.originalname).toLowerCase()}`
+            console.log(fileNameWithExt)
             if (fileExt === '.heic' || fileExt === '.HEIC') {
                 HeicToChange.create({ name: fileName })
                     .then(cb(null, fileNameWithExt))
