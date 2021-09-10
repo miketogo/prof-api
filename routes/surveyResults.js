@@ -16,6 +16,7 @@ router.post('/', celebrate({
     address: Joi.string().required(),
     homeOrg: Joi.string().required(),
     area: Joi.number().min(1).required(),
+    monthPay: Joi.string().required(),
   }),
 }), createAnswer);
 
