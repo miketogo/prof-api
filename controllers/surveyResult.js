@@ -19,12 +19,12 @@ module.exports.getResults = (req, res, next) => {
 
 module.exports.createAnswer = (req, res, next) => {
   const {
-    firstname, secondname, email, phone, address, area, homeOrg,
+    firstname, secondname, email, phone, address, area, homeOrg, monthPay
   } = req.body;
   const realDate = new Date
   let date = moment(realDate.toISOString()).tz("Europe/Moscow").format('D.MM.YYYY  HH:mm')
   SurveyResult.create({
-    firstname, secondname, email, phone, address, area, homeOrg, date 
+    firstname, secondname, email, phone, address, area, homeOrg, date , monthPay
   })
     .then((result) => res.status(200).send({ result }))
     .catch((err) => {

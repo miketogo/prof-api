@@ -5,14 +5,14 @@ const surveyResultSchema = new mongoose.Schema({
     firstname: {
         type: String,
         required: true,
-        minlength: 2,
-        maxlength: 30,
+        minlength: 1,
+
     },
     secondname: {
         type: String,
         required: true,
-        minlength: 2,
-        maxlength: 30,
+        minlength: 1,
+
     },
     address: {
         type: String,
@@ -43,6 +43,10 @@ const surveyResultSchema = new mongoose.Schema({
         minlength: 2,
     },
     date:{
+        type: String,
+        required: true,
+    },
+    monthPay:{
         type: String,
         required: true,
     }
