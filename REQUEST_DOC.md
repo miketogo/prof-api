@@ -897,7 +897,30 @@ Returns new appeal
         }
 }
 ```
-
+## POST requests with admin auth
+------
+#### Add house
+ ```javascript
+ fetch(`${this._BASE_URL}/houses/add`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        "Authorization": `Bearer ${jwt}`
+      },
+      body: JSON.stringify({
+        "name": name,
+        "formValue": formValue,
+        "city": city,
+        "address": address,
+        "statements": statements,
+        "entranceArray": entranceArray,
+      }
+      )
+    }).then(this._checkResponse)
+```
+Returns  new house
 # METHOD PATCH
 ------
 ## PATCH requests with auth
