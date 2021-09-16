@@ -133,7 +133,7 @@ a[x-apple-data-detectors='true'] {
     <tr>
       <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:arial,helvetica,sans-serif;" align="left">
         
-  <h1 style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-weight: normal; font-family: arial,helvetica,sans-serif; font-size: 22px;">
+  <h1 style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-weight: normal; font-family: arial,helvetica,sans-serif; color: #FFFFFF; font-size: 22px;">
     Для завершения регистрации подтвердите адрес электронной почты
   </h1>
 
@@ -148,7 +148,7 @@ a[x-apple-data-detectors='true'] {
       <td style="overflow-wrap:break-word;word-break:break-word;padding:20px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
         
   <div style="line-height: 140%; text-align: center; word-wrap: break-word;">
-    <p style="font-size: 14px; line-height: 140%;">${name}, пожалуйста нажмите кнопку или перейдите по ссылке ниже для подтверждения адреса электронной почты</p>
+    <p style="font-size: 14px; line-height: 140%; color: #FFFFFF;">${name}, пожалуйста нажмите кнопку или перейдите по ссылке ниже для подтверждения адреса электронной почты</p>
   </div>
 
       </td>
@@ -164,7 +164,7 @@ a[x-apple-data-detectors='true'] {
 <div align="center">
   <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;font-family:arial,helvetica,sans-serif;"><tr><td style="font-family:arial,helvetica,sans-serif;" align="center"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="" style="height:36px; v-text-anchor:middle; width:162px;" arcsize="11%" stroke="f" fillcolor="#3AAEE0"><w:anchorlock/><center style="color:#FFFFFF;font-family:arial,helvetica,sans-serif;"><![endif]-->
     <a href="${link+token}" target="_blank" style="box-sizing: border-box;display: inline-block;font-family:arial,helvetica,sans-serif;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #FFFFFF; background-color: #4285F4; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; width:auto; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;">
-      <span style="display:block;padding:10px 20px;line-height:120%;">Подтвердить email</span>
+      <span style="display:block;padding:10px 20px;line-height:120%; color: #FFFFFF;">Подтвердить email</span>
     </a>
   <!--[if mso]></center></v:roundrect></td></tr></table><![endif]-->
 </div>

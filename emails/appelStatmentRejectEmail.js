@@ -141,7 +141,7 @@ const appelStatmentRejectEmailHtml = (headText, rejectReason, status, date, text
                           <tr>
                             <td style="overflow-wrap:break-word;word-break:break-word;padding:35px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
 
-                              <h1 style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-weight: normal; font-family: arial,helvetica,sans-serif; font-size: 22px;">
+                              <h1 style="margin: 0px;color: #FFFFFF; line-height: 140%; text-align: center; word-wrap: break-word; font-weight: normal; font-family: arial,helvetica,sans-serif; font-size: 22px;">
                                 ${headText}
                               </h1>
 
@@ -156,8 +156,8 @@ const appelStatmentRejectEmailHtml = (headText, rejectReason, status, date, text
                             <td style="overflow-wrap:break-word;word-break:break-word;padding:20px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
 
                               <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
-                              <p style="font-size: 14px; line-height: 140%; text-align: center;">Запрос на изготовление справки был <span style="font-size: 14px; line-height: 140%;  color: #FF3055; ">отклонен</span></p>
-                              <p style="font-size: 14px; line-height: 140%; text-align: center; margin-top:15px;">Отслеживать статус изготовления можно на сайте в разделе "Мои Справки".</p>
+                              <p style="font-size: 14px;color: #FFFFFF; line-height: 140%; text-align: center;">Запрос на изготовление справки был <span style="font-size: 14px; line-height: 140%;  color: #FF3055; ">отклонен</span></p>
+                              <p style="font-size: 14px;color: #FFFFFF; line-height: 140%; text-align: center; margin-top:15px;">Отслеживать статус изготовления можно на сайте в разделе "Мои Справки".</p>
                               </div>
 
                             </td>
@@ -172,7 +172,7 @@ const appelStatmentRejectEmailHtml = (headText, rejectReason, status, date, text
 
                               <div style="line-height: 140%; text-align: center; word-wrap: break-word;">
                                 <p style="font-size: 14px; line-height: 140%; margin-top:10px; color: #fff;">Дата: <span style="font-size: 14px; line-height: 140%;  color: #3456F3;  ">${date}</span></p>
-                                <p style="font-size: 14px; line-height: 140%; margin-top:12px; color: #fff;">Статус: <span style="font-size: 14px; line-height: 140%;   ">${status}</span></p>
+                                <p style="font-size: 14px; line-height: 140%; margin-top:12px; color: #fff;">Статус: <span style="font-size: 14px; line-height: 140%; color: #FF3055;   ">${status}</span></p>
                                 <p style="font-size: 16px; line-height: 160%; margin-top:30px; color: #fff; text-align: center">Причина отклонения:</p>
                                 <p style="font-size: 14px; line-height: 140%; margin-top:10px; color: #fff; text-align: center">${rejectReason}</p>
                                 <p style="font-size: 16px; line-height: 160%; margin-top:30px; color: #fff; text-align: center">Справка:</p>

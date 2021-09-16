@@ -141,7 +141,7 @@ const meterReadingsNotifiEmailHtml = (headText, text) => {return `<!DOCTYPE HTML
                           <tr>
                             <td style="overflow-wrap:break-word;word-break:break-word;padding:35px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
 
-                              <h1 style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-weight: normal; font-family: arial,helvetica,sans-serif; font-size: 22px;">
+                              <h1 style="margin: 0px;color: #FFFFFF; line-height: 140%; text-align: center; word-wrap: break-word; font-weight: normal; font-family: arial,helvetica,sans-serif; font-size: 22px;">
                                 ${headText}
                               </h1>
 
@@ -156,8 +156,8 @@ const meterReadingsNotifiEmailHtml = (headText, text) => {return `<!DOCTYPE HTML
                             <td style="overflow-wrap:break-word;word-break:break-word;padding:20px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
 
                               <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
-                                <p style="font-size: 14px; line-height: 140%; text-align: center;">${text}</p>
-                                <p style="font-size: 14px; line-height: 140%; text-align: center; margin-top: 30px;">Если Вы допустили ошибку при отправке, отправьте жалобу в разделе "Мои жалобы" с объяснением произошедшего</p>
+                                <p style="font-size: 14px; line-height: 140%;color: #FFFFFF; text-align: center;">${text}</p>
+                                <p style="font-size: 14px; line-height: 140%;color: #FFFFFF; text-align: center; margin-top: 30px;">Если Вы допустили ошибку при отправке, отправьте жалобу в разделе "Мои жалобы" с объяснением произошедшего</p>
                               </div>
 
                             </td>

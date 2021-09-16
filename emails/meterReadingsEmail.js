@@ -141,7 +141,7 @@ const meterReadingsEmailHtml = (headText, hotWater, coldWater, date) => {return 
                           <tr>
                             <td style="overflow-wrap:break-word;word-break:break-word;padding:35px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
 
-                              <h1 style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-weight: normal; font-family: arial,helvetica,sans-serif; font-size: 22px;">
+                              <h1 style="margin: 0px; line-height: 140%; text-align: center;color: #FFFFFF; word-wrap: break-word; font-weight: normal; font-family: arial,helvetica,sans-serif; font-size: 22px;">
                                 ${headText}
                               </h1>
 
@@ -156,8 +156,8 @@ const meterReadingsEmailHtml = (headText, hotWater, coldWater, date) => {return 
                             <td style="overflow-wrap:break-word;word-break:break-word;padding:20px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
 
                               <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
-                                <p style="font-size: 14px; line-height: 140%; text-align: center;">Посмотреть историю показаний можно на сайте в разделе "Мои счётчики".</p>
-                                <p style="font-size: 14px; line-height: 140%; text-align: center; margin-top: 10px;">Если Вы допустили ошибку при отправке, отправьте жалобу в разделе "Мои жалобы" с объяснением произошедшего</p>
+                                <p style="font-size: 14px; line-height: 140%; text-align: center; color: #FFFFFF;">Посмотреть историю показаний можно на сайте в разделе "Мои счётчики".</p>
+                                <p style="font-size: 14px; line-height: 140%; text-align: center; color: #FFFFFF; margin-top: 10px;">Если Вы допустили ошибку при отправке, отправьте жалобу в разделе "Мои жалобы" с объяснением произошедшего</p>
                               </div>
 
                             </td>
@@ -172,8 +172,8 @@ const meterReadingsEmailHtml = (headText, hotWater, coldWater, date) => {return 
 
                               <div style="line-height: 140%; text-align: center; word-wrap: break-word;">
                                 <p style="font-size: 14px; line-height: 140%; margin-top:10px; color: #fff;">Дата: <span style="font-size: 14px; line-height: 140%;  color: #3456F3;  ">${date}</span></p>
-                                <p style="font-size: 14px; line-height: 140%; margin-top:12px; color: #fff;">Холодная вода: <span style="font-size: 14px; line-height: 140%;">${coldWater}</span></p>
-                                <p style="font-size: 14px; line-height: 140%; margin-top:10px; color: #fff;">Горячая вода: <span style="font-size: 14px; line-height: 140%;">${hotWater}</span></p>
+                                <p style="font-size: 14px; line-height: 140%; margin-top:12px; color: #fff;">Холодная вода: <span style="font-size: 14px; line-height: 140%; color: #FFFFFF;">${coldWater}</span></p>
+                                <p style="font-size: 14px; line-height: 140%; margin-top:10px; color: #fff;">Горячая вода: <span style="font-size: 14px; line-height: 140%; color: #FFFFFF;">${hotWater}</span></p>
                               </div>
 
                             </td>

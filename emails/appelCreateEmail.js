@@ -141,7 +141,7 @@ const appealCreateEmailHtml = (headText, status, date, text) => {return `<!DOCTY
                           <tr>
                             <td style="overflow-wrap:break-word;word-break:break-word;padding:35px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
 
-                              <h1 style="margin: 0px; line-height: 140%; text-align: center; word-wrap: break-word; font-weight: normal; font-family: arial,helvetica,sans-serif; font-size: 22px;">
+                              <h1 style="margin: 0px;color: #FFFFFF; line-height: 140%; text-align: center; word-wrap: break-word; font-weight: normal; font-family: arial,helvetica,sans-serif; font-size: 22px;">
                                 ${headText}
                               </h1>
 
@@ -156,8 +156,8 @@ const appealCreateEmailHtml = (headText, status, date, text) => {return `<!DOCTY
                             <td style="overflow-wrap:break-word;word-break:break-word;padding:20px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
 
                               <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
-                                <p style="font-size: 14px; line-height: 140%; text-align: center;">Отслеживать статус обращения можно на сайте в разделе "Мои обращения".</p>
-                                <p style="font-size: 14px; line-height: 140%; text-align: center; margin-top:15px;">При изменении статуса обращеня Вам будет отправлено письмо.</p>
+                                <p style="font-size: 14px;color: #FFFFFF; line-height: 140%; text-align: center;">Отслеживать статус обращения можно на сайте в разделе "Мои обращения".</p>
+                                <p style="font-size: 14px;color: #FFFFFF; line-height: 140%; text-align: center; margin-top:15px;">При изменении статуса обращеня Вам будет отправлено письмо.</p>
                               </div>
 
                             </td>
@@ -172,7 +172,7 @@ const appealCreateEmailHtml = (headText, status, date, text) => {return `<!DOCTY
 
                               <div style="line-height: 140%; text-align: center; word-wrap: break-word;">
                                 <p style="font-size: 14px; line-height: 140%; margin-top:10px; color: #fff;">Дата: <span style="font-size: 14px; line-height: 140%;  color: #3456F3;  ">${date}</span></p>
-                                <p style="font-size: 14px; line-height: 140%; margin-top:12px; color: #fff;">Статус: <span style="font-size: 14px; line-height: 140%;   ">${status}</span></p>
+                                <p style="font-size: 14px; line-height: 140%; margin-top:12px; color: #fff;">Статус: <span style="font-size: 14px; line-height: 140%; color: #FFFFFF;  ">${status}</span></p>
                                 <p style="font-size: 16px; line-height: 160%; margin-top:30px; color: #fff; text-align: center">Текст обращения:</p>
                                 <p style="font-size: 14px; line-height: 140%; margin-top:10px; color: #fff; text-align: center">${text}</p>
                               </div>
