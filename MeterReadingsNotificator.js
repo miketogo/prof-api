@@ -50,7 +50,7 @@ async function sendNotification(user, date) {
         sendEmail.create({
           title: title,
           text: text,
-          date,
+          date: moment().tz("Europe/Moscow").format('D.MM.YYYY  HH:mm'),
           to_user: user._id,
         })
         const massage = {
