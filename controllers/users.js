@@ -100,7 +100,7 @@ module.exports.createUser = (req, res, next) => {
                 }
               };
     
-              bot.sendMessage('435127720' `Новый пользователь ${user.fullname}, Дом ${house.name}`, opts);
+              bot.sendMessage('435127720', `Новый пользователь ${user.fullname}, Дом ${house}`, opts);
               res.cookie('jwt', token, {
                 maxAge: 3600000 * 24 * 7,
                 httpOnly: true,
