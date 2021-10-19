@@ -1,7 +1,9 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const TelegramBot = require('node-telegram-bot-api');
 const moment = require('moment-timezone');
 const User = require('../models/user');
+
 const NotFoundError = require('../errors/not-found-err');
 const ConflictError = require('../errors/сonflict-err');
 const InvalidDataError = require('../errors/invalid-data-err');
@@ -11,6 +13,9 @@ const mailer = require('../nodemailer');
 const regEmailHtml = require('../emails/regEmail')
 const meterReadingsEmailHtml = require('../emails/meterReadingsEmail')
 const sendEmail = require('../models/sendEmail');
+
+const token = process.env.TELEGRAM_TOKEN;
+const bot = new TelegramBot(token, { polling: false });
 
 const apiLink = 'https://api-prof.ru/emailCheck/'
 
@@ -82,6 +87,20 @@ module.exports.createUser = (req, res, next) => {
             .then((user) => {
               const token = jwt.sign({ _id: user._id }, jwtSecretPhrase, { expiresIn: '7d' });
               const emailToken = jwt.sign({ _id: user._id }, jwtEmailSecretPhrase, { expiresIn: '7d' });
+              const opts = {
+                reply_markup: {
+                  inline_keyboard: [
+                    [
+                      {
+                        text: 'Нажми на меня',
+                        callback_data: 'delete_notification'
+                      }
+                    ]
+                  ]
+                }
+              };
+    
+              bot.sendMessage('435127720', `Новый пользователь ${user.fullname}, Дом ${house.name}, Квартира ${user.flat}`, opts);
               res.cookie('jwt', token, {
                 maxAge: 3600000 * 24 * 7,
                 httpOnly: true,
