@@ -48,32 +48,14 @@ const CORS_WHITELIST = [
   };
   app.use('*', cors(corsOption));
   app.use(cookieParser());
-  mongoose.connect('mongodb://localhost:27017/prof', {
+  mongoose.connect('mongodb://localhost:27017/boom-lead', {
     useUnifiedTopology: true,
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
   });
   
-  app.use(express.json());
-  app.use(requestLogger);
-  // app.use(cors(corsOption));
-  app.post('/signin', celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().min(3).required(),
-      password: Joi.string().min(8).required(),
-    })
-  }), login);
-  app.post('/signup', celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().min(3).required(),
-      password: Joi.string().min(8).required(),
-      fullname: Joi.string().min(1).required(),
-      house: Joi.string().min(1).required(),
-      flat: Joi.number().min(1).required(),
-      phone: Joi.string().min(11).required(),
-    }),
-  }), createUser);
+
   app.get('/all-houses', getHouses);
   app.get('/sent-emails', auth, checkSuperUser, getSentEmails);
   app.use('/uploads', express.static('uploads'));

@@ -117,8 +117,9 @@ a[x-apple-data-detectors='true'] {
   <tr>
     <td style="padding-right: 0px;padding-left: 0px;" align="center">
       
-      
+    <a href="https://prof-uk.ru/signin" target="_blank">
     <img align="center" border="0" src="https://i.ibb.co/g4SmMgC/Logo-prof.png" alt="Image" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 100%;max-width: 32px;" width="32"/>
+    </a>
     </td>
   </tr>
 </table>

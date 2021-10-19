@@ -38,7 +38,7 @@ async function sendNotification(user, date) {
         console.log(err)
       })
   }
-  if (user.emailVerified && date === '19 18') {
+  if (user.emailVerified && date === '20 15') {
     await timer(3000)
       .then(() => {
         console.log(date)
