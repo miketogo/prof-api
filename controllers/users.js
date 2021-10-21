@@ -9,6 +9,7 @@ const AuthError = require('../errors/auth-err');
 const House = require('../models/house');
 const mailer = require('../nodemailer');
 const regEmailHtml = require('../emails/regEmail')
+const meterReadingsEmailHtml = require('../emails/meterReadingsEmail')
 const sendEmail = require('../models/sendEmail');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
@@ -57,7 +58,7 @@ module.exports.createUser = (req, res, next) => {
       const realDate = new Date
       let date = moment(realDate.toISOString()).tz("Europe/Moscow").format('D.MM.YYYY  HH:mm')
       console.log(names, emailLowerCase, house, house._id)
-      
+
       bcrypt.hash(password, 10)
         .then((hash) => User.create({
           fullname: fullname.trim(),
@@ -164,6 +165,113 @@ module.exports.getUserByChatId = (req, res, next) => {
     })
     .catch(next);
 };
+
+module.exports.updateMeterReadings = (req, res, next) => {
+  User.findById(req.user._id).orFail(() => new Error('NotFound'))
+    .then((user) => {
+      const realDate = new Date
+      let date = moment(realDate.toISOString()).tz("Europe/Moscow").format('D.MM.YYYY  HH:mm')
+      const { hotWater, coldWater } = req.body;
+      if (user.meterReadings.length === 0) {
+        if (Number(date.split('.')[0]) >= 20 && Number(date.split('.')[0]) <= 25) {
+          let meterReadings = {
+            time: date,
+            hotWaterSupply: hotWater,
+            coldWaterSupply: coldWater,
+          }
+          User.findByIdAndUpdate(req.user._id, {
+            meterReadings: meterReadings,
+          }, opts).orFail(() => new Error('NotFound'))
+            .then((user) => res.status(200).send({ user }))
+            .catch((err) => {
+              if (err.message === 'NotFound') {
+                throw new NotFoundError('Нет пользователя с таким id');
+              }
+              if (err.name === 'ValidationError' || err.name === 'CastError') {
+                throw new InvalidDataError('Переданы некорректные данные при отправки показаний счетчиков');
+              }
+            }).catch(next);
+        }
+        else {
+          throw new Error('NotRightDate')
+        }
+
+      } else {
+        if (Number(date.split('.')[0]) >= 20 && Number(date.split('.')[0]) <= 25) {
+          if (Number(user.meterReadings[user.meterReadings.length - 1].time.split('.')[1]) !== Number(date.split('.')[1])) {
+            if (Number(user.meterReadings[user.meterReadings.length - 1].hotWaterSupply) <= hotWater && Number(user.meterReadings[user.meterReadings.length - 1].coldWaterSupply) <= coldWater) {
+              let meterReadings = {
+                time: date,
+                hotWaterSupply: hotWater,
+                coldWaterSupply: coldWater,
+              }
+              let newMeterReadings = user.meterReadings
+              newMeterReadings.push(meterReadings)
+              User.findByIdAndUpdate(req.user._id, {
+                meterReadings: newMeterReadings,
+              }, opts).orFail(() => new Error('NotFound'))
+                .then((user) => {
+                  res.status(200).send({ user })
+                  const title = 'Показания счётчиков приняты'
+                  const text = `Вы отправили показания счётчиков,
+
+Посмотреть историю показаний можно в разделе "Мои счётчики".
+Если Вы допустили ошибку при отправке, отправьте жалобу в разделе "Мои жалобы" с объяснением произошедшего`
+                  sendEmail.create({
+                    title: title,
+                    text: text,
+                    date,
+                    to_user: user._id,
+                  })
+                  const massage = {
+                    to: user.email,
+                    subject: title,
+                    text: text,
+                    html: `${meterReadingsEmailHtml(title, hotWater, coldWater, date)}`
+                  }
+                  mailer(massage)
+                })
+                .catch((err) => {
+                  if (err.message === 'NotFound') {
+                    throw new NotFoundError('Нет пользователя с таким id');
+                  }
+                  if (err.name === 'ValidationError' || err.name === 'CastError') {
+                    throw new InvalidDataError('Переданы некорректные данные при отправки показаний счетчиков');
+                  }
+                }).catch(next);
+            } else {
+              throw new Error('InvalidDataError')
+            }
+
+          } else {
+            throw new Error('ResendingError')
+          }
+        } else {
+          throw new Error('NotRightDate')
+        }
+
+      }
+    })
+
+
+    .catch((err) => {
+      console.log(err)
+      if (err.message === 'NotFound') {
+        throw new NotFoundError('Нет пользователя с таким id');
+      }
+      if (err.message === 'InvalidDataError') {
+        throw new InvalidDataError('Показания счетчиков не могут быть меньше чем при прошлой подаче');
+      }
+      if (err.message === 'ResendingError') {
+        throw new ConflictError('Подать показания можно только один раз в месяц');
+      }
+      if (err.message === 'NotRightDate') {
+        throw new AuthError('Подать показания счетчиков можно только в 20-25 числа каждого месяца');
+      }
+    })
+    .catch(next);
+
+}
 
 module.exports.updateUserProfile = (req, res, next) => {
   User.findById(req.user._id).orFail(() => new Error('NotFound'))

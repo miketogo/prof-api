@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const {
-  getUsers, getUserById, updateUserProfile,
+  getUsers, getUserById, updateUserProfile, updateMeterReadings
 } = require('../controllers/users');
 
 router.get('/', getUsers);
@@ -19,6 +19,12 @@ router.patch('/me', celebrate({
     email: Joi.string().min(3).required(),
   }),
 }), updateUserProfile);
+router.post('/meter-update', celebrate({
+  body: Joi.object().keys({
+    hotWater: Joi.number().min(0).required(),
+    coldWater: Joi.number().min(0).required(),
+  }),
+}), updateMeterReadings);
 
 
 

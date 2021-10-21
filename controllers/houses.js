@@ -26,27 +26,33 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports.addHouse = (req, res, next) => {
     const {
-        name, formValue, city, address, entranceArray
+        name, formValue, city, address, entranceArray, statements
     } = req.body;
     House.create({
-        name, formValue, city, address, entranceArray // записываем хеш в базу
+        name, formValue, city, address, entranceArray, statements // записываем хеш в базу
     })
-    .then((house)=>{
-        res.send({ house });
-    })
-    .catch((err) => {
-        if (err.name === 'ValidationError') {
-            throw new InvalidDataError('Переданы некорректные данные при создании дома');
-        }
-    })
-    .catch(next);
+        .then((house) => {
+            res.send({ house });
+        })
+        .catch((err) => {
+            if (err.name === 'ValidationError') {
+                throw new InvalidDataError('Переданы некорректные данные при создании дома');
+            }
+        })
+        .catch(next);
 };
 
-module.exports.getEntranceNumber = (req, res, next) => {
-    const {
-        flat, formValue
-    } = req.body;
-    
-    
+module.exports.getStatements = (req, res, next) => {
+    User.findById(req.user._id).orFail(() => new Error('NotFound'))
+        .populate('house')
+        .then((user) => {
+            res.status(200).send({ statements: user.house.statements })
+        })
+        .catch((err) => {
+            if (err.message === 'NotFound') {
+                throw new NotFoundError('Нет пользователя с таким id');
+            }
+        })
+        .catch(next)
 };
 

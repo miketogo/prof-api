@@ -56,7 +56,12 @@ const appealSchema = new mongoose.Schema({
             },
 
         }
-    ]
+    ],
+    type:{
+        type: String,
+        required: true,
+        enum: ['complaint', 'statement']
+    }
 });
 
 // создаём модель и экспортируем её

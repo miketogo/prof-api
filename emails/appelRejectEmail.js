@@ -157,7 +157,7 @@ const appelRejectEmailHtml = (headText, rejectReason, status, date, text) => {re
 
                               <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
                                 <p style="font-size: 14px; line-height: 140%; text-align: center;">Ваше обращение было <span style="font-size: 14px; line-height: 140%;  color: #FF3055; ">отклонено</span></p>
-                                <p style="font-size: 14px; line-height: 140%; text-align: center; margin-top:15px;">Отслеживать статус обращения можно на сайте в разделе Мои обращения.</p>
+                                <p style="font-size: 14px; line-height: 140%; text-align: center; margin-top:15px;">Отслеживать статус обращения можно на сайте в разделе "Мои обращения".</p>
                               </div>
 
                             </td>
@@ -172,7 +172,7 @@ const appelRejectEmailHtml = (headText, rejectReason, status, date, text) => {re
 
                               <div style="line-height: 140%; text-align: center; word-wrap: break-word;">
                                 <p style="font-size: 14px; line-height: 140%; margin-top:10px; color: #fff;">Дата: <span style="font-size: 14px; line-height: 140%;  color: #FF3055;  ">${date}</span></p>
-                                <p style="font-size: 14px; line-height: 140%; margin-top:10px; color: #fff;">Статус: <span style="font-size: 14px; line-height: 140%; color: #FF3055;   ">${status}</span></p>
+                                <p style="font-size: 14px; line-height: 140%; margin-top:12px; color: #fff;">Статус: <span style="font-size: 14px; line-height: 140%; color: #FF3055;   ">${status}</span></p>
                                 <p style="font-size: 16px; line-height: 160%; margin-top:30px; color: #fff; text-align: center">Причина отклонения:</p>
                                 <p style="font-size: 14px; line-height: 140%; margin-top:10px; color: #fff; text-align: center">${rejectReason}</p>
                                 <p style="font-size: 16px; line-height: 160%; margin-top:30px; color: #fff; text-align: center">Текст обращения:</p>

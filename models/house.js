@@ -22,6 +22,18 @@ const houseSchema = new mongoose.Schema({
         type: Array,
         required: true,
     },
+    statements: [
+        {
+            name: {
+                type: String,
+                required: true,
+            },
+            value: {
+                type: String,
+                required: true,
+            },
+        }
+    ],
 });
 
 // создаём модель и экспортируем её

@@ -1,4 +1,4 @@
-const appealCreateEmailHtml = (headText, status, date, text) => {return `<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+const meterReadingsEmailHtml = (headText, hotWater, coldWater, date) => {return `<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 
 <head>
@@ -156,8 +156,8 @@ const appealCreateEmailHtml = (headText, status, date, text) => {return `<!DOCTY
                             <td style="overflow-wrap:break-word;word-break:break-word;padding:20px 10px 10px;font-family:arial,helvetica,sans-serif;" align="left">
 
                               <div style="line-height: 140%; text-align: left; word-wrap: break-word;">
-                                <p style="font-size: 14px; line-height: 140%; text-align: center;">Отслеживать статус обращения можно на сайте в разделе "Мои обращения".</p>
-                                <p style="font-size: 14px; line-height: 140%; text-align: center; margin-top:15px;">При изменении статуса обращеня Вам будет отправлено письмо.</p>
+                                <p style="font-size: 14px; line-height: 140%; text-align: center;">Посмотреть историю показаний можно на сайте в разделе "Мои счётчики".</p>
+                                <p style="font-size: 14px; line-height: 140%; text-align: center; margin-top: 10px;">Если Вы допустили ошибку при отправке, отправьте жалобу в разделе "Мои жалобы" с объяснением произошедшего</p>
                               </div>
 
                             </td>
@@ -172,9 +172,8 @@ const appealCreateEmailHtml = (headText, status, date, text) => {return `<!DOCTY
 
                               <div style="line-height: 140%; text-align: center; word-wrap: break-word;">
                                 <p style="font-size: 14px; line-height: 140%; margin-top:10px; color: #fff;">Дата: <span style="font-size: 14px; line-height: 140%;  color: #3456F3;  ">${date}</span></p>
-                                <p style="font-size: 14px; line-height: 140%; margin-top:12px; color: #fff;">Статус: <span style="font-size: 14px; line-height: 140%;   ">${status}</span></p>
-                                <p style="font-size: 16px; line-height: 160%; margin-top:30px; color: #fff; text-align: center">Текст обращения:</p>
-                                <p style="font-size: 14px; line-height: 140%; margin-top:10px; color: #fff; text-align: center">${text}</p>
+                                <p style="font-size: 14px; line-height: 140%; margin-top:12px; color: #fff;">Холодная вода: <span style="font-size: 14px; line-height: 140%;">${coldWater}</span></p>
+                                <p style="font-size: 14px; line-height: 140%; margin-top:10px; color: #fff;">Горячая вода: <span style="font-size: 14px; line-height: 140%;">${hotWater}</span></p>
                               </div>
 
                             </td>
@@ -205,4 +204,4 @@ const appealCreateEmailHtml = (headText, status, date, text) => {return `<!DOCTY
 
 </html>
 `}
-module.exports = appealCreateEmailHtml
+module.exports = meterReadingsEmailHtml

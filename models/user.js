@@ -91,6 +91,19 @@ const userSchema = new mongoose.Schema({
         ref: 'house',
         required: true,
     },
+    meterReadings:[
+        {
+            time: {
+                type: String,
+            },
+            hotWaterSupply: {
+                type: Number,
+            },
+            coldWaterSupply: {
+                type: Number,
+            },
+        }
+    ]
 });
 
 // eslint-disable-next-line func-names

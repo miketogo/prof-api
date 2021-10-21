@@ -274,7 +274,7 @@ module.exports.changeStatus = (req, res, next) => {
     }
 };
 
-module.exports.createAppeal = (req, res, next) => {
+module.exports.createAppealComplaint = (req, res, next) => {
     let {
         text, image
     } = req.body;
@@ -302,7 +302,8 @@ module.exports.createAppeal = (req, res, next) => {
                     image,
                     owner: user._id,
                     dateOfRequest: date,
-                    howReceived: howReceived, // записываем хеш в базу
+                    howReceived: howReceived,
+                    type: 'complaint' // записываем хеш в базу
                 })
                     .then((appeal) => {
                         let status;
@@ -315,7 +316,7 @@ module.exports.createAppeal = (req, res, next) => {
                         } else if (appeal.status === 'rejected') {
                             status = 'Отклонено'
                         }
-                        
+
                         const title = 'Ваше обращение принято в обработку'
                         const text = `Отслеживать статус обращения можно в разделе Мои обращения.
                         
@@ -361,6 +362,104 @@ module.exports.createAppeal = (req, res, next) => {
         .catch((err) => {
             if (err.message === 'NotFound') {
                 throw new NotFoundError('Нет пользователя с таким id');
+            }
+            if (err.message === 'EmailError') {
+                throw new AuthError('Email не подтвержден, для доступа к этой функции подтвердите email');
+            }
+        })
+        .catch(next)
+
+};
+
+module.exports.createAppealStatement = (req, res, next) => {
+    let {
+        value,
+    } = req.body;
+
+    User.findById(req.user._id).orFail(() => new Error('NotFound'))
+        .populate('house')
+        .then((user) => {
+            
+            if (user.emailVerified) {
+                let howReceived
+                if (!req.chat_id) {
+                    howReceived = 'Через сайт'
+                } else {
+                    howReceived = 'Через телеграм бота'
+                }
+                const statementData = user.house.statements.filter(function (item) {
+                    return item.value.trim() === value.trim()
+                });
+                
+                if (statementData.length === 0) {
+                    
+                    throw new Error('StatementNotFound');
+                } else {
+                    const realDate = new Date
+                    let date = moment(realDate.toISOString()).tz("Europe/Moscow").format('D.MM.YYYY  HH:mm')
+                    console.log(statementData[0].name.trim())
+                    Appeal.create({
+                        text: `Заказ справки: "${statementData[0].name.trim()}"`,
+                        owner: user._id,
+                        dateOfRequest: date,
+                        howReceived: howReceived,
+                        type: 'statement' // записываем хеш в базу
+                    })
+                        .then((appeal) => {
+                            let status;
+                            if (appeal.status === 'waiting') {
+                                status = 'В ожидании'
+                            } else if (appeal.status === 'in_work') {
+                                status = 'В работе'
+                            } else if (appeal.status === 'done') {
+                                status = 'Выполнено'
+                            } else if (appeal.status === 'rejected') {
+                                status = 'Отклонено'
+                            }
+
+                            const title = 'Ваше обращение принято в обработку'
+                            const text = `Отслеживать статус обращения можно в разделе Мои обращения.
+                            
+    При изменении статуса Вам будет отправлено письмо.`
+                            sendEmail.create({
+                                date,
+                                title: title,
+                                text: text,
+                                to_user: req.user._id,
+                            })
+
+                            const massage = {
+                                to: user.email,
+                                subject: title,
+                                text: text, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
+                                html: `${appealCreateEmailHtml('Ваше обращение принято в обработку', status, date, appeal.text)}`
+                            }
+                            mailer(massage)
+
+
+                            res.send({ appeal });
+                        }
+                        )
+                        .catch((err) => {
+                            console.log(err)
+                            if (err.name === 'ValidationError') {
+                                throw new InvalidDataError('Переданы некорректные данные при создании обращения');
+                            }
+                        })
+                        .catch(next);
+                }
+
+            } else {
+                throw new Error('EmailError');
+            }
+
+        })
+        .catch((err) => {
+            if (err.message === 'NotFound') {
+                throw new NotFoundError('Нет пользователя с таким id');
+            }
+            if (err.message === 'StatementNotFound') {
+                throw new NotFoundError('Нет справки с таким значением value');
             }
             if (err.message === 'EmailError') {
                 throw new AuthError('Email не подтвержден, для доступа к этой функции подтвердите email');

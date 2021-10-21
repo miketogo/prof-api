@@ -3,12 +3,13 @@ const { celebrate, Joi } = require('celebrate');
 
 const checkSuperUser = require('../middlewares/checkSuperUser');
 const {
-  getAppeals, createAppeal, getUserAppeals, changeStatus, uploadImage
+  getAppeals, createAppealComplaint, getUserAppeals, changeStatus, uploadImage, createAppealStatement
 } = require('../controllers/appeals');
 
 router.get('/all', checkSuperUser, getAppeals);
 
-router.post('/create', uploadImage, createAppeal);
+router.post('/create-complaint', uploadImage, createAppealComplaint);
+router.post('/order-statement', createAppealStatement);
 router.get('/my', getUserAppeals);
 router.patch('/change-status', checkSuperUser, changeStatus)
 

@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const checkSuperUser = require('../middlewares/checkSuperUser');
 const {
-    addHouse, getEntranceNumber
+    addHouse, getStatements
 } = require('../controllers/houses');
 
 router.post('/add', celebrate({
@@ -11,10 +11,11 @@ router.post('/add', celebrate({
         formValue: Joi.string().required(),
         city: Joi.string().required(),
         address: Joi.string().required(),
+        statements: Joi.array().required(),
         entranceArray: Joi.array().items(Joi.number().min(1)).required(),
     }),
 }), checkSuperUser, addHouse);
-router.get('/entnum', checkSuperUser, getEntranceNumber);
+router.get('/statements', getStatements);
 
 
 module.exports = router;
