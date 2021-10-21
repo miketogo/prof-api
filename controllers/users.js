@@ -29,6 +29,13 @@ module.exports.getUsers = (req, res, next) => {
     .catch(next);
 };
 
+module.exports.getSentEmails = (req, res, next) => {
+  sendEmail.find({})
+    .populate('to_user')
+    .then((emails) => res.status(200).send({ emails }))
+    .catch(next);
+};
+
 module.exports.createUser = (req, res, next) => {
   const {
     fullname, email, password, house, flat, phone,

@@ -24,7 +24,7 @@ module.exports.createAnswer = (req, res, next) => {
   const realDate = new Date
   let date = moment(realDate.toISOString()).tz("Europe/Moscow").format('D.MM.YYYY  HH:mm')
   SurveyResult.create({
-    firstname, secondname, email, phone, address, area, homeOrg, date // записываем хеш в базу
+    firstname, secondname, email, phone, address, area, homeOrg, date 
   })
     .then((result) => res.status(200).send({ result }))
     .catch((err) => {
