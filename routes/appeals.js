@@ -9,7 +9,14 @@ const {
 router.get('/all', checkSuperUser, getAppeals);
 
 router.post('/create-complaint', uploadImage, createAppealComplaint);
-router.post('/order-statement', createAppealStatement);
+router.post('/order-statement', celebrate({
+  body: Joi.object().keys({
+     value: Joi.string().required(),
+  }),
+  params: Joi.object().keys({
+      chat_id: Joi.string().required(),
+  }).unknown(true)
+}), createAppealStatement);
 router.get('/my', getUserAppeals);
 router.patch('/change-status', checkSuperUser, changeStatus)
 

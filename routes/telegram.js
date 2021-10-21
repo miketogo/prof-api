@@ -1,8 +1,9 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const auth = require('../middlewares/auth');
+const authByChatId = require('../middlewares/authByChatId');
 const {
-    connect, getUserByChatId, disconnect
+    connect, getUserByChatId, disconnect, updateMeterReadings
 } = require('../controllers/users');
 
 router.post('/connect/:chat_id', celebrate({
@@ -24,6 +25,15 @@ router.get('/user/:chat_id', celebrate({
         chat_id: Joi.string().required(),
     }).unknown(true)
 }), getUserByChatId);
+router.post('/user/meter-update/:chat_id', celebrate({
+    body: Joi.object().keys({
+        hotWater: Joi.number().min(0).required(),
+        coldWater: Joi.number().min(0).required(),
+    }),
+    params: Joi.object().keys({
+        chat_id: Joi.string().required(),
+    }).unknown(true)
+}), authByChatId, updateMeterReadings);
 
 
 module.exports = router;
