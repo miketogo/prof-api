@@ -587,6 +587,7 @@ module.exports.connect = (req, res, next) => {
   const { email, password } = req.body;
   const { chat_id } = req.params;
   let emailLowerCase = email.toLowerCase();
+  const realDate = new Date
   let date = moment(realDate.toISOString()).tz("Europe/Moscow").format('D.MM.YYYY  HH:mm')
   User.findUserByCredentials(emailLowerCase, password)
     .then((user) => {
@@ -698,6 +699,7 @@ module.exports.sendNewsLetter = (req, res, next) => {
   async function sendMailToUser({ user, mail_text, mail_title }) {
     await timer(2500)
       .then(() => {
+        const realDate = new Date
         let date = moment(realDate.toISOString()).tz("Europe/Moscow").format('D.MM.YYYY  HH:mm')
         const email_title = `${mail_title}`
         const email_text = `${mail_text}`
