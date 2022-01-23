@@ -696,18 +696,18 @@ module.exports.sendNewsLetter = (req, res, next) => {
   async function sendMailToUser({ user, mail_text, mail_title }) {
     await timer(500)
       .then(() => {
-        const title = `${mail_title.trim()}`
-        const text = `${mail_text.tirm()}`
+        const email_title = `${mail_title}`
+        const email_text = `${mail_text}`
         sendEmail.create({
-          title: title,
-          text: text,
+          title: email_title,
+          text: email_text,
           to_user: user._id,
         })
         const massage = {
-          to: user.email.toLowerCase().trim(),
-          subject: title,
-          text: text, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
-          html: `${newsletterEmailHtml({ title, text })}`
+          to: user.email.toLowerCase(),
+          subject: email_title,
+          text: email_text, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
+          html: `${newsletterEmailHtml({ email_title, email_text })}`
         }
         mailer(massage)
 
@@ -730,7 +730,7 @@ module.exports.sendNewsLetter = (req, res, next) => {
         // Wait for the previous item to finish processing
         await a;
         // Process this item
-        await sendMailToUser({ user, mail_text: text, mail_title: title });
+        await sendMailToUser({ user, mail_text: text.trim(), mail_title: title.trim()});
       }, Promise.resolve())
         .then(() => {
           res.status(200).send({ emailsSent: true })
