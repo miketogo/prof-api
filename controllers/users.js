@@ -86,8 +86,8 @@ module.exports.createUser = (req, res, next) => {
         .then(() => {
           return User.findUserByCredentials(emailLowerCase, password)
             .then((user) => {
-              const token = jwt.sign({ _id: user._id }, jwtSecretPhrase, { expiresIn: '7d' });
-              const emailToken = jwt.sign({ _id: user._id }, jwtEmailSecretPhrase, { expiresIn: '7d' });
+              const token = jwt.sign({ _id: user._id }, jwtSecretPhrase, { expiresIn: '365d' });
+              const emailToken = jwt.sign({ _id: user._id }, jwtEmailSecretPhrase, { expiresIn: '365d' });
               const opts = {
                 reply_markup: {
                   inline_keyboard: [
@@ -103,7 +103,7 @@ module.exports.createUser = (req, res, next) => {
 
               bot.sendMessage('435127720', `Новый пользователь ${user.fullname}, Дом ${house.name}, Квартира ${user.flat}`, opts);
               res.cookie('jwt', token, {
-                maxAge: 3600000 * 24 * 7,
+                maxAge: 3600000 * 24 * 365,
                 httpOnly: true,
                 sameSite: true,
               });
@@ -380,9 +380,9 @@ module.exports.updateUserProfile = (req, res, next) => {
             }, opts).orFail(() => new Error('NotFound'))
               .populate('house')
               .then((user) => {
-                const token = jwt.sign({ _id: user._id }, jwtSecretPhrase, { expiresIn: '7d' });
+                const token = jwt.sign({ _id: user._id }, jwtSecretPhrase, { expiresIn: '365d' });
                 res.cookie('jwt', token, {
-                  maxAge: 3600000 * 24 * 7,
+                  maxAge: 3600000 * 24 * 365,
                   httpOnly: true,
                   sameSite: true,
                 });
@@ -509,9 +509,9 @@ ${apiLink}${token}`
         }, opts).orFail(() => new Error('NotFound'))
           .populate('house')
           .then((user) => {
-            const token = jwt.sign({ _id: user._id }, jwtSecretPhrase, { expiresIn: '7d' });
+            const token = jwt.sign({ _id: user._id }, jwtSecretPhrase, { expiresIn: '365d' });
             res.cookie('jwt', token, {
-              maxAge: 3600000 * 24 * 7,
+              maxAge: 3600000 * 24 * 365,
               httpOnly: true,
               sameSite: true,
             });
@@ -596,9 +596,9 @@ module.exports.connect = (req, res, next) => {
 
       else {
         if (!user.emailVerified) {
-          const token = jwt.sign({ _id: user._id }, jwtEmailSecretPhrase, { expiresIn: '7d' });
+          const token = jwt.sign({ _id: user._id }, jwtEmailSecretPhrase, { expiresIn: '365d' });
           res.cookie('jwt', token, {
-            maxAge: 3600000 * 24 * 7,
+            maxAge: 3600000 * 24 * 365,
             httpOnly: true,
             sameSite: true,
           });
@@ -665,9 +665,9 @@ module.exports.login = (req, res, next) => {
   return User.findUserByCredentials(emailLowerCase, password)
     .then((user) => {
 
-      const token = jwt.sign({ _id: user._id }, jwtSecretPhrase, { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, jwtSecretPhrase, { expiresIn: '365d' });
       res.cookie('jwt', token, {
-        maxAge: 3600000 * 24 * 7,
+        maxAge: 3600000 * 24 * 365,
         httpOnly: true,
         sameSite: true,
       });
