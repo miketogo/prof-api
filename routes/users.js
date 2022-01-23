@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const checkSuperUser = require('../middlewares/checkSuperUser');
 const {
-  getUsers, getUserById, updateUserProfile, updateMeterReadings, getSentEmails, getUserIsAdmin
+  getUsers, getUserById, updateUserProfile, updateMeterReadings, getSentEmails, getUserIsAdmin , sendNewsLetter
 } = require('../controllers/users');
 
 router.get('/', checkSuperUser, getUsers);
@@ -24,6 +24,14 @@ router.post('/meter-update', celebrate({
     coldWater: Joi.number().min(0).required(),
   }),
 }), updateMeterReadings);
+
+router.post('/sendnewsletter', celebrate({
+  body: Joi.object().keys({
+    title: Joi.string().min(1).required(),
+    text: Joi.string().min(1).required(),
+    house_ids: Joi.array().required(),
+  }),
+}), checkSuperUser, sendNewsLetter);
 
 
 

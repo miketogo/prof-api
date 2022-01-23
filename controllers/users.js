@@ -13,6 +13,7 @@ const mailer = require('../nodemailer');
 const regEmailHtml = require('../emails/regEmail')
 const meterReadingsEmailHtml = require('../emails/meterReadingsEmail')
 const sendEmail = require('../models/sendEmail');
+const newsletterEmailHtml = require('../emails/newsletterEmail');
 
 const token = process.env.TELEGRAM_TOKEN;
 const bot = new TelegramBot(token, { polling: false });
@@ -99,7 +100,7 @@ module.exports.createUser = (req, res, next) => {
                   ]
                 }
               };
-    
+
               bot.sendMessage('435127720', `Новый пользователь ${user.fullname}, Дом ${house.name}, Квартира ${user.flat}`, opts);
               res.cookie('jwt', token, {
                 maxAge: 3600000 * 24 * 7,
@@ -571,7 +572,7 @@ ${apiLink}${token}`
           }).catch(next);
       }
     })
-    .catch((err)=>{
+    .catch((err) => {
       if (err.message === 'NotFound') {
         throw new NotFoundError('Нет пользователя с таким id');
       }
@@ -674,6 +675,70 @@ module.exports.login = (req, res, next) => {
     })
     .catch(() => {
       throw new AuthError('Передан неверный логин или пароль');
+    })
+    .catch(next);
+};
+
+
+
+module.exports.sendNewsLetter = (req, res, next) => {
+  const { text, title, house_ids } = req.body;
+  // let emailLowerCase = email.toLowerCase();
+
+  function timer(ms) {
+    return new Promise(function (resolve, reject) {
+      setTimeout(function () {
+        resolve();
+      }, ms);
+    });
+  }
+
+  async function sendMailToUser({ user, mail_text, mail_title }) {
+    await timer(500)
+      .then(() => {
+        const title = `${mail_title.trim()}`
+        const text = `${mail_text.tirm()}`
+        sendEmail.create({
+          title: title,
+          text: text,
+          to_user: user._id,
+        })
+        const massage = {
+          to: user.email.toLowerCase().trim(),
+          subject: title,
+          text: text, //!! ИСПРАВИТЬ АДРЕСС ПОТОМ
+          html: `${newsletterEmailHtml({ title, text })}`
+        }
+        mailer(massage)
+
+      })
+  }
+
+
+
+
+  User.find()
+    .then((users) => {
+      let filteredUsers = users.filter((item) => {
+        if (house_ids.filter((id) => {
+          if (id.toString().trim() === item.house.toString().trim()) return true
+          else return false
+        }).length === 1) return true
+        else return false
+      })
+      filteredUsers.reduce(async (a, user) => {
+        // Wait for the previous item to finish processing
+        await a;
+        // Process this item
+        await sendMailToUser({ user, mail_text: text, mail_title: title });
+      }, Promise.resolve())
+        .then(() => {
+          res.status(200).send({ emailsSent: true })
+        })
+
+
+
+
     })
     .catch(next);
 };
