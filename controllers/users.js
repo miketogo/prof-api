@@ -219,10 +219,12 @@ module.exports.updateMeterReadings = (req, res, next) => {
             hotWaterSupply: hotWater,
             coldWaterSupply: coldWater,
           }
+          
           User.findByIdAndUpdate(req.user._id, {
             meterReadings: meterReadings,
           }, opts).orFail(() => new Error('NotFound'))
             .then((user) => {
+              bot.sendMessage(-714587471, `${user.fullname} КВ${user.flat} ГВС${hotWater}, ХВС${coldWater}`, opts);
               res.status(200).send({ user })
               const title = 'Показания счётчиков приняты'
               const text = `Вы отправили показания счётчиков,
@@ -271,6 +273,7 @@ module.exports.updateMeterReadings = (req, res, next) => {
                 meterReadings: newMeterReadings,
               }, opts).orFail(() => new Error('NotFound'))
                 .then((user) => {
+                  bot.sendMessage(-714587471, `${user.fullname} КВ${user.flat} ГВС${hotWater}, ХВС${coldWater}`, opts);
                   res.status(200).send({ user })
                   const title = 'Показания счётчиков приняты'
                   const text = `Вы отправили показания счётчиков,
