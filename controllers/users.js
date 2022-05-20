@@ -2,6 +2,9 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const TelegramBot = require('node-telegram-bot-api');
 const moment = require('moment-timezone');
+
+const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
+
 const User = require('../models/user');
 
 const NotFoundError = require('../errors/not-found-err');
@@ -26,6 +29,27 @@ const opts = {
   new: true,
   runValidators: true,
 };
+
+
+const WAPP_KEY = process.env.WAPP_KEY;
+
+async function sendWhatsApp({ phone, text }) {
+
+  const response = await fetch(`http://51.250.22.77:3004/api/whatsapp/send_message`, {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/vnd.yclients.v2+json',
+      'X-API-Key': WAPP_KEY,
+    },
+    body: JSON.stringify({
+      "to": phone,
+      "text": text,
+    })
+  });
+  const data = await response.json();
+  return await data
+}
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
@@ -219,12 +243,26 @@ module.exports.updateMeterReadings = (req, res, next) => {
             hotWaterSupply: hotWater,
             coldWaterSupply: coldWater,
           }
-          
+
           User.findByIdAndUpdate(req.user._id, {
             meterReadings: meterReadings,
           }, opts).orFail(() => new Error('NotFound'))
             .then((user) => {
-              bot.sendMessage(-714587471, `${user.fullname} КВ${user.flat} ГВС${hotWater}, ХВС${coldWater}`, opts);
+              sendWhatsApp({
+                phone: '79030949037-1522055414', text: `${user.fullname} 
+Дата: ${date}
+Кавртира:${user.flat} 
+Показания: ГВС${hotWater}, ХВС${coldWater}`
+              })
+                .then(() => {
+                  console.log('WappNotifySent')
+                })
+                .catch((err) => {
+                  console.log(err)
+                })
+              bot.sendMessage(-714587471, `${user.fullname}
+Кавртира${user.flat} 
+Показания: ГВС${hotWater}, ХВС${coldWater}`, opts);
               res.status(200).send({ user })
               const title = 'Показания счётчиков приняты'
               const text = `Вы отправили показания счётчиков,
@@ -739,7 +777,7 @@ module.exports.sendNewsLetter = (req, res, next) => {
         // Wait for the previous item to finish processing
         await a;
         // Process this item
-        await sendMailToUser({ user, mail_text: text.trim(), mail_title: title.trim()});
+        await sendMailToUser({ user, mail_text: text.trim(), mail_title: title.trim() });
       }, Promise.resolve())
         .then(() => {
           res.status(200).send({ emailsSent: true })
