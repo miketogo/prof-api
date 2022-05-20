@@ -35,7 +35,7 @@ const WAPP_KEY = process.env.WAPP_KEY;
 
 async function sendWhatsApp({ phone, text }) {
 
-  const response = await fetch(`http://51.250.22.77:3004/api/whatsapp/send_message`, {
+  const response = await fetch(`http://51.250.20.253:3004/api/whatsapp/send_message`, {
     method: 'post',
     headers: {
       'Content-Type': 'application/json',
