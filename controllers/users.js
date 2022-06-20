@@ -247,12 +247,17 @@ module.exports.updateMeterReadings = (req, res, next) => {
           User.findByIdAndUpdate(req.user._id, {
             meterReadings: meterReadings,
           }, opts).orFail(() => new Error('NotFound'))
+            .populate('house')
             .then((user) => {
               sendWhatsApp({
                 phone: '79030949037-1522055414', text: `${user.fullname} 
 Дата: ${date}
-Кавртира:${user.flat} 
-Показания: ГВС${hotWater}, ХВС${coldWater}`
+Кавртира: ${user.flat} 
+Дом: ${user.house.name}
+
+Показания: 
+ХВС: ${coldWater},
+ГВС: ${hotWater}`
               })
                 .then(() => {
                   console.log('WappNotifySent')
@@ -261,9 +266,14 @@ module.exports.updateMeterReadings = (req, res, next) => {
                   console.log('WappNotSend')
                   console.log(err)
                 })
-              bot.sendMessage(-714587471, `${user.fullname}
-Кавртира${user.flat} 
-Показания: ГВС${hotWater}, ХВС${coldWater}`, opts);
+              bot.sendMessage(-714587471, `${user.fullname} 
+Дата: ${date}
+Кавртира: ${user.flat} 
+Дом: ${user.house.name}
+              
+Показания: 
+ХВС: ${coldWater},
+ГВС: ${hotWater}`, opts);
               res.status(200).send({ user })
               const title = 'Показания счётчиков приняты'
               const text = `Вы отправили показания счётчиков,
@@ -311,12 +321,17 @@ module.exports.updateMeterReadings = (req, res, next) => {
               User.findByIdAndUpdate(req.user._id, {
                 meterReadings: newMeterReadings,
               }, opts).orFail(() => new Error('NotFound'))
+                .populate('house')
                 .then((user) => {
                   sendWhatsApp({
                     phone: '79030949037-1522055414', text: `${user.fullname} 
 Дата: ${date}
-Кавртира:${user.flat} 
-Показания: ГВС${hotWater}, ХВС${coldWater}`
+Кавртира: ${user.flat} 
+Дом: ${user.house.name}
+                                  
+Показания: 
+ХВС: ${coldWater},
+ГВС: ${hotWater}`
                   })
                     .then(() => {
                       console.log('WappNotifySent')
@@ -325,7 +340,14 @@ module.exports.updateMeterReadings = (req, res, next) => {
                       console.log('WappNotSend')
                       console.log(err)
                     })
-                  bot.sendMessage(-714587471, `${user.fullname} КВ${user.flat} ГВС${hotWater}, ХВС${coldWater}`, opts);
+                  bot.sendMessage(-714587471, `${user.fullname}
+Дата: ${date}
+Кавртира: ${user.flat} 
+Дом: ${user.house.name}
+                                  
+Показания: 
+ХВС: ${coldWater},
+ГВС: ${hotWater}`, opts);
                   res.status(200).send({ user })
                   const title = 'Показания счётчиков приняты'
                   const text = `Вы отправили показания счётчиков,
